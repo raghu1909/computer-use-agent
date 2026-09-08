@@ -1,0 +1,11 @@
+{
+  "step_id": "s05",
+  "kind": "http_error_page",
+  "expected": "after click: text_present 'SAVINGS BALANCE'",
+  "observed": "error page signature: 'HTTP 500'",
+  "locator_attempts": [
+    "role=button name='INQUIRE' -> OK"
+  ],
+  "url": "http://localhost:5000/members/12345",
+  "evidence_dir": "evidence/20260908T215830_replay_app_error"
+}

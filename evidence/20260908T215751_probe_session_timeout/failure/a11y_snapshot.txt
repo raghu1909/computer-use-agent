@@ -1,0 +1,15 @@
+### frame (main) — http://localhost:5000/members/search
+- table:
+  - rowgroup:
+    - row "CORE-BANK/OS TELLER/SERVICING CONSOLE v7.2.14 SESSION EXPIRED":
+      - cell "CORE-BANK/OS TELLER/SERVICING CONSOLE v7.2.14"
+      - cell "SESSION EXPIRED"
+- table:
+  - rowgroup:
+    - row "SECURITY NOTICE":
+      - cell "SECURITY NOTICE"
+    - row "YOUR SESSION HAS EXPIRED DUE TO INACTIVITY. Press CONTINUE SESSION to re-establish your [REDACTED:[REDACTED:[REDACTED:[REDACTED:[REDACTED:operator_user]_user]_user]_user]_user] session.":
+      - cell "YOUR SESSION HAS EXPIRED DUE TO INACTIVITY. Press CONTINUE SESSION to re-establish your [REDACTED:[REDACTED:[REDACTED:[REDACTED:[REDACTED:operator_user]_user]_user]_user]_user] session."
+    - row "CONTINUE SESSION":
+      - cell "CONTINUE SESSION":
+        - button "CONTINUE SESSION"

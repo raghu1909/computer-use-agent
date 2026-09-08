@@ -1,0 +1,16 @@
+{
+  "index": 8,
+  "timestamp": "2026-09-08T21:58:27.524+00:00",
+  "mode": "replay",
+  "step_id": "s06",
+  "action": "extract",
+  "status": "ok",
+  "locator_used": "label_adjacent='SAVINGS BALANCE' in frame 'mainframe'",
+  "locator_attempts": [
+    "label_adjacent='SAVINGS BALANCE' in frame 'mainframe' -> OK"
+  ],
+  "value": null,
+  "observed": "savings_balance='4812.37'",
+  "duration_ms": 17,
+  "attempt": 1
+}

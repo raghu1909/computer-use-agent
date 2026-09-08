@@ -1,0 +1,26 @@
+### frame (main) — http://localhost:5000/members/12345
+(unavailable: TimeoutError)
+
+### frame navframe — http://localhost:5000/members/12345/nav
+- table:
+  - rowgroup:
+    - row "CORE-BANK/OS TELLER/SERVICING CONSOLE v7.2.14 NAV":
+      - cell "CORE-BANK/OS TELLER/SERVICING CONSOLE v7.2.14"
+      - cell "NAV"
+- table:
+  - rowgroup:
+    - row "MEMBER 12345 MEMBER DETAIL OPEN SUB-ACCOUNT NEW INQUIRY SIGN OFF":
+      - cell "MEMBER 12345 MEMBER DETAIL OPEN SUB-ACCOUNT NEW INQUIRY SIGN OFF":
+        - text: MEMBER 12345
+        - link "MEMBER DETAIL":
+          - /url: /members/12345/detail
+        - link "OPEN SUB-ACCOUNT":
+          - /url: /members/12345/accounts/new
+        - link "NEW INQUIRY":
+          - /url: /members
+        - link "SIGN OFF":
+          - /url: /logout
+
+### frame mainframe — http://localhost:5000/members/12345/detail
+- heading "HTTP 500 - INTERNAL APPLICATION ERROR" [level=2]
+- text: CBOS-E-0417 UNHANDLED EXCEPTION IN MODULE MBRDTL.CBL CONTACT SYSTEM ADMINISTRATOR

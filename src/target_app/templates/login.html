@@ -1,0 +1,12 @@
+{% with title="SIGNON" %}{% include "_head.html" %}{% endwith %}
+<br><br><center>
+<form method="post" action="/login">
+<table border="1" cellpadding="4" cellspacing="0" bgcolor="#e8e8e8">
+<tr><td colspan="2" class="hdrbar"><font color="#ffffff">OPERATOR SIGNON</font></td></tr>
+{% if error %}<tr><td colspan="2"><font color="#cc0000"><b>{{ error }}</b></font></td></tr>{% endif %}
+<tr><td><font>USER ID</font></td><td><input type="text" name="userid" size="16" class="td_cell_03"></td></tr>
+<tr><td><font>PASSWORD</font></td><td><input type="password" name="passwd" size="16" class="td_cell_04"></td></tr>
+<tr><td colspan="2" align="center"><input type="submit" value="SIGN ON" class="btn"></td></tr>
+</table></form>
+<br><font size="1">Demo credentials: operator / letmein-demo (fictional; not real PII)</font>
+</center></body></html>

@@ -1,0 +1,28 @@
+### frame (main) — http://localhost:5000/members/search
+- table:
+  - rowgroup:
+    - row "CORE-BANK/OS TELLER/SERVICING CONSOLE v7.2.14 MEMBER INQUIRY":
+      - cell "CORE-BANK/OS TELLER/SERVICING CONSOLE v7.2.14"
+      - cell "MEMBER INQUIRY"
+- table:
+  - rowgroup:
+    - row "MENU MEMBER INQUIRY SIGN OFF MEMBER INQUIRY - SEARCH NO MEMBER FOUND FOR NUMBER 99999 MEMBER NUMBER 99999 INQUIRE":
+      - cell "MENU MEMBER INQUIRY SIGN OFF":
+        - text: MENU
+        - link "MEMBER INQUIRY":
+          - /url: /members
+        - link "SIGN OFF":
+          - /url: /logout
+      - cell "MEMBER INQUIRY - SEARCH NO MEMBER FOUND FOR NUMBER 99999 MEMBER NUMBER 99999 INQUIRE":
+        - table:
+          - rowgroup:
+            - row "MEMBER INQUIRY - SEARCH":
+              - cell "MEMBER INQUIRY - SEARCH"
+            - row "NO MEMBER FOUND FOR NUMBER 99999":
+              - cell "NO MEMBER FOUND FOR NUMBER 99999"
+            - row "MEMBER NUMBER 99999 INQUIRE":
+              - cell "MEMBER NUMBER"
+              - cell "99999":
+                - textbox: "99999"
+              - cell "INQUIRE":
+                - button "INQUIRE"

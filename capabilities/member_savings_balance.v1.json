@@ -1,0 +1,341 @@
+{
+  "schema_version": "1.0",
+  "capability_id": "93f8f5bc-8665-4da2-80ef-8b5399199d8e",
+  "name": "member_savings_balance",
+  "version": 1,
+  "status": "approved",
+  "description": "Sign on to the core banking console, look up a member by number and return the current savings balance.",
+  "entry_url": "http://localhost:5000/",
+  "parameters": [
+    {
+      "name": "member_id",
+      "type": "integer",
+      "description": "Member number as shown on the member card (digits only)",
+      "required": true,
+      "example": "12345",
+      "pattern": "\\d+",
+      "sensitive": false
+    },
+    {
+      "name": "operator_user",
+      "type": "string",
+      "description": "Operator user id for the console",
+      "required": true,
+      "sensitive": true
+    },
+    {
+      "name": "operator_password",
+      "type": "string",
+      "description": "Operator password",
+      "required": true,
+      "sensitive": true
+    }
+  ],
+  "outputs": [
+    {
+      "name": "savings_balance",
+      "type": "decimal",
+      "description": "Current savings balance in USD",
+      "extracted_by": "s06",
+      "postprocess": "money"
+    }
+  ],
+  "steps": [
+    {
+      "step_id": "s01",
+      "action": "type",
+      "description": "Enter operator user id",
+      "locators": [
+        {
+          "strategy": "label_adjacent",
+          "value": "USER ID",
+          "exact": true,
+          "rationale": "control located relative to its label cell (legacy table form, no <label>); layout-agnostic within the row"
+        },
+        {
+          "strategy": "css",
+          "value": "input[name=\"userid\"]",
+          "exact": true,
+          "rationale": "form field name is part of the server contract"
+        },
+        {
+          "strategy": "xpath",
+          "value": "/html[1]/body[1]/center[1]/form[1]/table[1]/tbody[1]/tr[2]/td[2]/input[1]",
+          "exact": true,
+          "rationale": "structural fallback; brittle, last resort"
+        }
+      ],
+      "value": "{operator_user}",
+      "risk": "safe",
+      "wait_for": [],
+      "outcomes": [],
+      "recoveries": [],
+      "timeout_ms": 10000
+    },
+    {
+      "step_id": "s02",
+      "action": "type",
+      "description": "Enter operator password",
+      "locators": [
+        {
+          "strategy": "label_adjacent",
+          "value": "PASSWORD",
+          "exact": true,
+          "rationale": "control located relative to its label cell (legacy table form, no <label>); layout-agnostic within the row"
+        },
+        {
+          "strategy": "css",
+          "value": "input[name=\"passwd\"]",
+          "exact": true,
+          "rationale": "form field name is part of the server contract"
+        },
+        {
+          "strategy": "xpath",
+          "value": "/html[1]/body[1]/center[1]/form[1]/table[1]/tbody[1]/tr[3]/td[2]/input[1]",
+          "exact": true,
+          "rationale": "structural fallback; brittle, last resort"
+        }
+      ],
+      "value": "{operator_password}",
+      "risk": "safe",
+      "wait_for": [],
+      "outcomes": [],
+      "recoveries": [],
+      "timeout_ms": 10000
+    },
+    {
+      "step_id": "s03",
+      "action": "click",
+      "description": "Submit sign-on",
+      "locators": [
+        {
+          "strategy": "role",
+          "value": "button",
+          "name": "SIGN ON",
+          "exact": true,
+          "rationale": "accessible role+name; survives markup and styling changes"
+        },
+        {
+          "strategy": "xpath",
+          "value": "/html[1]/body[1]/center[1]/form[1]/table[1]/tbody[1]/tr[4]/td[1]/input[1]",
+          "exact": true,
+          "rationale": "structural fallback; brittle, last resort"
+        }
+      ],
+      "risk": "safe",
+      "wait_for": [
+        {
+          "kind": "url_contains",
+          "value": "/members",
+          "timeout_ms": 5000,
+          "description": "navigation landed where it did during discovery"
+        },
+        {
+          "kind": "text_present",
+          "value": "MEMBER INQUIRY",
+          "timeout_ms": 5000,
+          "description": "text the agent predicted and then observed"
+        }
+      ],
+      "outcomes": [],
+      "recoveries": [],
+      "timeout_ms": 10000
+    },
+    {
+      "step_id": "s04",
+      "action": "type",
+      "description": "Enter member number",
+      "locators": [
+        {
+          "strategy": "label_adjacent",
+          "value": "MEMBER NUMBER",
+          "exact": true,
+          "rationale": "control located relative to its label cell (legacy table form, no <label>); layout-agnostic within the row"
+        },
+        {
+          "strategy": "css",
+          "value": "input[name=\"membernum\"]",
+          "exact": true,
+          "rationale": "form field name is part of the server contract"
+        },
+        {
+          "strategy": "xpath",
+          "value": "/html[1]/body[1]/table[2]/tbody[1]/tr[1]/td[2]/form[1]/table[1]/tbody[1]/tr[2]/td[2]/input[1]",
+          "exact": true,
+          "rationale": "structural fallback; brittle, last resort"
+        }
+      ],
+      "value": "{member_id}",
+      "risk": "safe",
+      "wait_for": [],
+      "outcomes": [],
+      "recoveries": [],
+      "timeout_ms": 10000
+    },
+    {
+      "step_id": "s05",
+      "action": "click",
+      "description": "Search for the member",
+      "locators": [
+        {
+          "strategy": "role",
+          "value": "button",
+          "name": "INQUIRE",
+          "exact": true,
+          "rationale": "accessible role+name; survives markup and styling changes"
+        },
+        {
+          "strategy": "xpath",
+          "value": "/html[1]/body[1]/table[2]/tbody[1]/tr[1]/td[2]/form[1]/table[1]/tbody[1]/tr[2]/td[3]/input[1]",
+          "exact": true,
+          "rationale": "structural fallback; brittle, last resort"
+        }
+      ],
+      "risk": "safe",
+      "wait_for": [
+        {
+          "kind": "url_contains",
+          "value": "/members/{member_id}",
+          "timeout_ms": 5000,
+          "description": "navigation landed where it did during discovery"
+        },
+        {
+          "kind": "text_present",
+          "value": "SAVINGS BALANCE",
+          "timeout_ms": 5000,
+          "description": "text the agent predicted and then observed"
+        }
+      ],
+      "outcomes": [
+        {
+          "code": "MEMBER_NOT_FOUND",
+          "when": {
+            "kind": "text_present",
+            "value": "NO MEMBER FOUND",
+            "timeout_ms": 0,
+            "description": "identified during probe 'not_found'"
+          },
+          "message": "No member exists with that number",
+          "capture_text": true
+        }
+      ],
+      "recoveries": [],
+      "timeout_ms": 10000
+    },
+    {
+      "step_id": "s06",
+      "action": "extract",
+      "description": "Read savings balance from the detail frame",
+      "locators": [
+        {
+          "strategy": "label_adjacent",
+          "value": "SAVINGS BALANCE",
+          "frame": "mainframe",
+          "exact": true,
+          "rationale": "value cell located relative to its label cell; layout-agnostic"
+        },
+        {
+          "strategy": "xpath",
+          "value": "/html[1]/body[1]/table[2]/tbody[1]/tr[5]/td[2]",
+          "frame": "mainframe",
+          "exact": true,
+          "rationale": "structural fallback; brittle, last resort"
+        }
+      ],
+      "output": "savings_balance",
+      "risk": "safe",
+      "wait_for": [],
+      "outcomes": [],
+      "recoveries": [],
+      "timeout_ms": 10000
+    }
+  ],
+  "success_checkpoint": [
+    {
+      "kind": "url_contains",
+      "value": "/members/{member_id}",
+      "timeout_ms": 5000,
+      "description": "final screen reached during discovery"
+    },
+    {
+      "kind": "text_present",
+      "value": "SAVINGS BALANCE",
+      "timeout_ms": 5000,
+      "description": "label of an extracted value is on screen"
+    }
+  ],
+  "global_outcomes": [],
+  "global_recoveries": [
+    {
+      "code": "SESSION_EXPIRED",
+      "when": {
+        "kind": "text_present",
+        "value": "SESSION EXPIRED",
+        "timeout_ms": 0,
+        "description": "identified during probe 'session_timeout'"
+      },
+      "actions": [
+        {
+          "step_id": "clear_session_expired",
+          "action": "click",
+          "description": "clear SESSION_EXPIRED: click CONTINUE SESSION",
+          "locators": [
+            {
+              "strategy": "role",
+              "value": "button",
+              "name": "CONTINUE SESSION",
+              "exact": true,
+              "rationale": "accessible role+name; survives markup and styling changes"
+            },
+            {
+              "strategy": "xpath",
+              "value": "/html[1]/body[1]/center[1]/table[1]/tbody[1]/tr[3]/td[1]/form[1]/input[1]",
+              "exact": true,
+              "rationale": "structural fallback; brittle, last resort"
+            }
+          ],
+          "risk": "safe",
+          "wait_for": [],
+          "outcomes": [],
+          "recoveries": [],
+          "timeout_ms": 10000
+        }
+      ],
+      "retry_from_step": "s04",
+      "max_attempts": 1
+    }
+  ],
+  "safety": {
+    "allowed_origins": [
+      "http://localhost:5000"
+    ],
+    "allowed_path_prefixes": [
+      "/"
+    ],
+    "allowed_actions": [
+      "navigate",
+      "click",
+      "type",
+      "select",
+      "press",
+      "wait",
+      "extract",
+      "assert"
+    ],
+    "risky_step_handling": "confirm",
+    "blocked_text_patterns": [
+      "\\bDROP\\s+TABLE\\b",
+      "<script"
+    ]
+  },
+  "meta": {
+    "created_at": "2026-09-08T21:57:40.169189Z",
+    "recorded_by": "discovery_agent",
+    "model": "scripted",
+    "discovery_run_id": "20260908T215734_discovery_scripted",
+    "source_goal": "Look up member 12345 and read their current savings balance",
+    "checkpoint_fingerprints": {
+      "final": "94d557812ef0c478"
+    }
+  }
+}

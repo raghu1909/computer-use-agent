@@ -1,0 +1,30 @@
+{
+  "index": 6,
+  "timestamp": "2026-09-08T21:57:38.112+00:00",
+  "mode": "discovery",
+  "url_before": "http://localhost:5000/members/12345",
+  "fingerprint_before": "2e1810a725194d09",
+  "decision": {
+    "action": "extract",
+    "ref": "e13",
+    "output_name": "savings_balance",
+    "risk": "safe",
+    "reasoning": "read the savings balance from the detail frame"
+  },
+  "element": {
+    "ref": "e13",
+    "role": "cell",
+    "name": "SAVINGS BALANCE",
+    "frame": "mainframe",
+    "candidate_locators": [
+      "label_adjacent='SAVINGS BALANCE' in frame 'mainframe'",
+      "xpath='/html[1]/body[1]/table[2]/tbody[1]/tr[5]/td[2]' in frame 'mainframe'"
+    ]
+  },
+  "url_after": "http://localhost:5000/members/12345",
+  "expect_seen": null,
+  "extracted": "4,812.37",
+  "error": null,
+  "duration_ms": 2082,
+  "human_intervention": null
+}

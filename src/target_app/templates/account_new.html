@@ -1,0 +1,10 @@
+{% with title="OPEN SUB-ACCOUNT" %}{% include "_head.html" %}{% endwith %}
+<br>
+<form method="post" action="/members/{{ m.number }}/accounts/new">
+<table border="1" cellpadding="4" cellspacing="0" bgcolor="#e8e8e8">
+<tr><td colspan="2" class="hdrbar"><font color="#ffffff">OPEN SUB-ACCOUNT - MEMBER {{ m.number }} {{ m.name }}</font></td></tr>
+{% if error %}<tr><td colspan="2" class="msgbox"><font color="#cc0000"><b>{{ error }}</b></font></td></tr>{% endif %}
+<tr><td><font>ACCOUNT TYPE</font></td><td><select name="accttype" class="td_cell_21"><option value="">-- SELECT --</option>{% for t in types %}<option>{{ t }}</option>{% endfor %}</select></td></tr>
+<tr><td><font>OPENING DEPOSIT</font></td><td><input type="text" name="deposit" size="10" class="td_cell_22"></td></tr>
+<tr><td colspan="2" align="center"><input type="submit" value="OPEN ACCOUNT" class="btn"></td></tr>
+</table></form></body></html>

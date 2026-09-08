@@ -1,0 +1,9 @@
+{% with title="CONFIRMATION" %}{% include "_head.html" %}{% endwith %}
+<br>
+<table border="1" cellpadding="4" cellspacing="0" bgcolor="#e0ffe0">
+<tr><td colspan="2" class="hdrbar"><font color="#ffffff">SUB-ACCOUNT OPENED - CONFIRMATION</font></td></tr>
+<tr><td><font>CONFIRMATION NUMBER</font></td><td><font class="td_cell_31"><b>{{ confirmation }}</b></font></td></tr>
+<tr><td><font>MEMBER</font></td><td><font>{{ m.number }} {{ m.name }}</font></td></tr>
+<tr><td><font>ACCOUNT TYPE</font></td><td><font>{{ acct_type }}</font></td></tr>
+<tr><td><font>OPENING DEPOSIT</font></td><td><font>{{ deposit }}</font></td></tr>
+</table><br><a href="/members/{{ m.number }}/detail">RETURN TO MEMBER DETAIL</a></body></html>

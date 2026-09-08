@@ -1,0 +1,13 @@
+{% with title="MEMBER INQUIRY" %}{% include "_head.html" %}{% endwith %}
+<table width="100%"><tr><td width="160" valign="top" bgcolor="#a0a0a0">
+<font><b>MENU</b></font><br><br>
+<a href="/members">MEMBER INQUIRY</a><br><br><a href="/logout">SIGN OFF</a></td>
+<td valign="top">
+<form method="post" action="/members/search">
+<table border="1" cellpadding="4" cellspacing="0" bgcolor="#e8e8e8">
+<tr><td colspan="3" class="hdrbar"><font color="#ffffff">MEMBER INQUIRY - SEARCH</font></td></tr>
+{% if error %}<tr><td colspan="3" class="msgbox"><font color="#cc0000"><b>{{ error }}</b></font></td></tr>{% endif %}
+<tr><td><font>MEMBER NUMBER</font></td><td><input type="text" name="membernum" size="12" value="{{ query }}" class="td_cell_07"></td>
+<td><input type="submit" value="INQUIRE" class="btn"></td></tr>
+</table></form>
+</td></tr></table></body></html>

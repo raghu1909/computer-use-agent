@@ -1,0 +1,16 @@
+{
+  "index": 5,
+  "timestamp": "2026-09-08T21:58:01.942+00:00",
+  "mode": "replay",
+  "step_id": "s05",
+  "action": "click",
+  "status": "recovered",
+  "locator_used": "role=button name='INQUIRE'",
+  "locator_attempts": [
+    "role=button name='INQUIRE' -> OK"
+  ],
+  "value": null,
+  "observed": "url_contains='/members/12345' not met; observed url=http://localhost:5000/members/search -> recovery SESSION_EXPIRED",
+  "duration_ms": 5105,
+  "attempt": 1
+}

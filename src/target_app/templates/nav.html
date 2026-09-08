@@ -1,0 +1,8 @@
+{% with title="NAV" %}{% include "_head.html" %}{% endwith %}
+<table bgcolor="#a0a0a0" width="100%" cellpadding="6"><tr><td>
+<font><b>MEMBER {{ m.number }}</b></font><br><br>
+<a href="/members/{{ m.number }}/detail" target="mainframe">MEMBER DETAIL</a><br><br>
+<a href="/members/{{ m.number }}/accounts/new" target="mainframe">OPEN SUB-ACCOUNT</a><br><br>
+<a href="/members" target="_top">NEW INQUIRY</a><br><br>
+<a href="/logout" target="_top">SIGN OFF</a>
+</td></tr></table></body></html>

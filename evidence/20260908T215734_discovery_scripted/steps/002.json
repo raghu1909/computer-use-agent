@@ -1,0 +1,31 @@
+{
+  "index": 2,
+  "timestamp": "2026-09-08T21:57:34.574+00:00",
+  "mode": "discovery",
+  "url_before": "http://localhost:5000/",
+  "fingerprint_before": "6c49620cd11a3155",
+  "decision": {
+    "action": "type",
+    "ref": "e2",
+    "value": "[REDACTED]",
+    "risk": "safe",
+    "reasoning": "enter the password (secret)"
+  },
+  "element": {
+    "ref": "e2",
+    "role": "textbox",
+    "name": "PASSWORD",
+    "frame": null,
+    "candidate_locators": [
+      "label_adjacent='PASSWORD'",
+      "css='input[name=\"passwd\"]'",
+      "xpath='/html[1]/body[1]/center[1]/form[1]/table[1]/tbody[1]/tr[3]/td[2]/input[1]'"
+    ]
+  },
+  "url_after": "http://localhost:5000/",
+  "expect_seen": null,
+  "extracted": null,
+  "error": null,
+  "duration_ms": 63,
+  "human_intervention": null
+}

@@ -1,0 +1,17 @@
+{% with title="MEMBER DETAIL" %}{% include "_head.html" %}{% endwith %}
+{% if notice %}
+<div class="overlay"><table cellpadding="10"><tr><td class="hdrbar"><font color="#ffffff">SYSTEM NOTICE</font></td></tr>
+<tr><td><font>SCHEDULED MAINTENANCE TONIGHT 23:00-01:00 CST. TRANSACTIONS MAY BE DELAYED.</font></td></tr>
+<tr><td align="center"><input type="button" value="ACKNOWLEDGE" class="btn" onclick="this.closest('.overlay').remove()"></td></tr></table></div>
+{% endif %}
+<br>
+<table border="1" cellpadding="4" cellspacing="0" bgcolor="#e8e8e8" width="90%">
+<tr><td colspan="4" class="hdrbar"><font color="#ffffff">MEMBER DETAIL</font></td></tr>
+<tr><td><font>MEMBER NUMBER</font></td><td><font><b>{{ m.number }}</b></font></td><td><font>STATUS</font></td><td><font>{{ m.status }}</font></td></tr>
+<tr><td><font>NAME</font></td><td><font>{{ m.name }}</font></td><td><font>MEMBER SINCE</font></td><td><font>{{ m.since }}</font></td></tr>
+<tr><td colspan="4" class="hdrbar"><font color="#ffffff">BALANCES</font></td></tr>
+<tr><td><font>SAVINGS BALANCE</font></td><td align="right"><font class="td_cell_12">{{ m.savings }}</font></td>
+<td><font>CHECKING BALANCE</font></td><td align="right"><font class="td_cell_13">{{ m.checking }}</font></td></tr>
+<tr><td colspan="4" class="hdrbar"><font color="#ffffff">SUB-ACCOUNTS</font></td></tr>
+{% for a in m.accounts %}<tr><td><font>{{ a[0] }}</font></td><td colspan="2"><font>{{ a[1] }}</font></td><td align="right"><font>{{ a[2] }}</font></td></tr>{% endfor %}
+</table></body></html>

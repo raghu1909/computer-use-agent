@@ -1,0 +1,24 @@
+{
+  "_comment": "Canned decisions for --llm scripted:FILE. Lets the discovery loop, recorder, replay and tests run without an API key. Refs are resolved on screen by role+name so the script does not depend on enumeration order.",
+  "decisions": [
+    {"action": "type", "ref": "find:textbox:USER ID", "value": "operator", "reasoning": "sign-on form: enter the operator user id"},
+    {"action": "type", "ref": "find:textbox:PASSWORD", "value": "letmein-demo", "reasoning": "enter the password (secret)", "risk": "safe"},
+    {"action": "click", "ref": "find:button:SIGN ON", "reasoning": "submit the sign-on form", "expect": "MEMBER INQUIRY"},
+    {"action": "type", "ref": "find:textbox:MEMBER NUMBER", "value": "12345", "reasoning": "enter the member number to look up"},
+    {"action": "click", "ref": "find:button:INQUIRE", "reasoning": "run the member search", "expect": "SAVINGS BALANCE"},
+    {"action": "extract", "ref": "find:cell:SAVINGS BALANCE", "output_name": "savings_balance", "reasoning": "read the savings balance from the detail frame"},
+    {"action": "done", "reasoning": "savings balance for the member has been read"}
+  ],
+  "classifications": {
+    "NO MEMBER FOUND": {"kind": "business_outcome", "code": "MEMBER_NOT_FOUND", "match_text": "NO MEMBER FOUND", "message": "No member exists with that number", "reasoning": "the search page reports the number is unknown; a legitimate answer for the caller"},
+    "SESSION EXPIRED": {"kind": "recoverable", "code": "SESSION_EXPIRED", "match_text": "SESSION EXPIRED", "clear_ref": "find:button:CONTINUE SESSION", "retry_from_step": "s04", "reasoning": "the host shows an idle-timeout interstitial; CONTINUE restores the session, then redo the search"},
+    "SCHEDULED MAINTENANCE": {"kind": "recoverable", "code": "MAINTENANCE_NOTICE", "match_text": "SCHEDULED MAINTENANCE", "clear_ref": "find:button:ACKNOWLEDGE", "reasoning": "informational interstitial; dismiss and continue"}
+  },
+  "distillation": {
+    "name": "member_savings_balance",
+    "description": "Sign on to the core banking console, look up a member by number and return the current savings balance.",
+    "parameter_descriptions": {"member_id": "Member number as shown on the member card (digits only)", "operator_user": "Operator user id for the console", "operator_password": "Operator password"},
+    "output_descriptions": {"savings_balance": "Current savings balance in USD"},
+    "step_descriptions": {"s01": "Enter operator user id", "s02": "Enter operator password", "s03": "Submit sign-on", "s04": "Enter member number", "s05": "Search for the member", "s06": "Read savings balance from the detail frame"}
+  }
+}
