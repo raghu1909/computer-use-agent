@@ -81,6 +81,8 @@ def cmd_discover(a: argparse.Namespace) -> int:
                     f"probe {label}: {rep.get('first_replay')} -> encoded {rep.get('encoded')} "
                     f"-> verified {rep.get('verified')}"
                 )
+            if a.name:
+                artifact.name = a.name
             if a.approve:
                 artifact.status = "approved"
             path = CapabilityStore(a.out_dir).save(artifact, a.output)
@@ -193,6 +195,7 @@ def build_parser() -> argparse.ArgumentParser:
     )
     d.add_argument("--approve", action="store_true", help="mark the artifact approved for unattended replay")
     d.add_argument("--app-family", default=None)
+    d.add_argument("--name", default=None, help="pin the capability name (default: chosen by the model)")
     d.add_argument("--output", default=None, help="artifact path (default capabilities/<name>.v1.json)")
     d.set_defaults(fn=cmd_discover)
 

@@ -1,0 +1,16 @@
+{
+  "index": 4,
+  "timestamp": "2026-09-09T00:45:14.830+00:00",
+  "mode": "replay",
+  "step_id": "s04",
+  "action": "click",
+  "status": "ok",
+  "locator_used": "role=button name='SIGN ON'",
+  "locator_attempts": [
+    "role=button name='SIGN ON' -> OK"
+  ],
+  "value": null,
+  "observed": "",
+  "duration_ms": 58,
+  "attempt": 1
+}

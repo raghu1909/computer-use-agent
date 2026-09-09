@@ -1,0 +1,17 @@
+{
+  "run_id": "20260909T004306_probe_not_found",
+  "mode": "probe",
+  "started_at": "2026-09-09T00:43:06.360+00:00",
+  "capability": "lookup_member_savings_balance",
+  "capability_version": 1,
+  "params": {
+    "member_id": "99999",
+    "operator_user": "[REDACTED]",
+    "operator_password": "[REDACTED]"
+  },
+  "entry_url": "http://localhost:5000/",
+  "finished_at": "2026-09-09T00:43:16.964+00:00",
+  "duration_s": 10.6,
+  "status": "failure",
+  "failure_kind": "checkpoint_failed"
+}

@@ -139,11 +139,13 @@ class Recorder:
                         description="navigation landed where it did during discovery",
                     )
                 )
-            if d.expect and r.expect_seen:
+            # an expectation that is (or contains) the extracted sample is data, not a checkpoint
+            data_like = bool(r.extracted and d.expect and (r.extracted in d.expect or d.expect in r.extracted))
+            if d.expect and r.expect_seen and not data_like:
                 wait_for.append(
                     Condition(
                         kind=ConditionKind.TEXT_PRESENT,
-                        value=d.expect,
+                        value=templatize(d.expect, self.all_values) or d.expect,
                         description="text the agent predicted and then observed",
                     )
                 )
@@ -228,7 +230,11 @@ class Recorder:
                 (r.decision.expect for r in reversed(acting) if r.decision.expect and r.expect_seen), None
             )
             if last_expect:
-                checkpoint.append(Condition(kind=ConditionKind.TEXT_PRESENT, value=last_expect))
+                checkpoint.append(
+                    Condition(
+                        kind=ConditionKind.TEXT_PRESENT, value=templatize(last_expect, self.all_values) or last_expect
+                    )
+                )
 
         name = (distill.name if distill else None) or re.sub(r"[^a-z0-9]+", "_", goal.lower()).strip("_")[:48]
         return CapabilityArtifact(

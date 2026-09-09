@@ -23,14 +23,15 @@ for _ in range(300):                       # wait for the intervention to be rai
         if items: break
     except httpx.HTTPError: pass
 iid = items[0]["id"]
-print(f"[operator] intervention {iid}: {items[0]['reason']} at step {items[0]['step_id']}", flush=True)
+step = items[0]["step_id"]                # the step that was in progress; re-run it once the page is fixed
+print(f"[operator] intervention {iid}: {items[0]['reason']} at step {step}", flush=True)
 state = httpx.get(f"{base}/interventions/{iid}/state").json()
 ref = next(l.split()[0] for l in state["elements"] if "MEMBER DETAIL" in l)
 print(f"[operator] clicking {ref} (MEMBER DETAIL link in the nav frame) on the live session", flush=True)
 httpx.post(f"{base}/interventions/{iid}/act", data={"action": "click", "ref": ref})
 httpx.post(f"{base}/interventions/{iid}/resume",
-           data={"decision": "resume", "notes": "reloaded detail frame after transient 500", "resume_from_step": "s06"})
-print("[operator] handed control back, resume from s06", flush=True)
+           data={"decision": "resume", "notes": "reloaded detail frame after transient 500", "resume_from_step": step})
+print(f"[operator] handed control back, resume from {step}", flush=True)
 EOF
 fi
 

@@ -1,0 +1,16 @@
+{
+  "index": 3,
+  "timestamp": "2026-09-09T00:45:42.159+00:00",
+  "mode": "replay",
+  "step_id": "s03",
+  "action": "type",
+  "status": "ok",
+  "locator_used": "label_adjacent='PASSWORD'",
+  "locator_attempts": [
+    "label_adjacent='PASSWORD' -> OK"
+  ],
+  "value": "[REDACTED]",
+  "observed": "",
+  "duration_ms": 12,
+  "attempt": 1
+}

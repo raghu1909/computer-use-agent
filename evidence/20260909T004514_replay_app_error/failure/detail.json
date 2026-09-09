@@ -1,0 +1,12 @@
+{
+  "step_id": "s07",
+  "kind": "http_error_page",
+  "expected": "extract target: label_adjacent='SAVINGS BALANCE' in frame 'mainframe' | xpath='/html[1]/body[1]/div[1]/table[1]/tbody[1]/tr[5]/td[2]' in frame 'mainframe'",
+  "observed": "error page signature: 'HTTP 500'",
+  "locator_attempts": [
+    "label_adjacent='SAVINGS BALANCE' in frame 'mainframe' -> TimeoutError",
+    "xpath='/html[1]/body[1]/div[1]/table[1]/tbody[1]/tr[5]/td[2]' in frame 'mainframe' -> TimeoutError"
+  ],
+  "url": "http://localhost:5000/members/12345",
+  "evidence_dir": "evidence/20260909T004514_replay_app_error"
+}

@@ -1,0 +1,32 @@
+{
+  "index": 2,
+  "timestamp": "2026-09-09T00:42:18.617+00:00",
+  "mode": "discovery",
+  "url_before": "http://localhost:5000/",
+  "fingerprint_before": "51e3092e1d7615c2",
+  "decision": {
+    "action": "type",
+    "ref": "e1",
+    "value": "[REDACTED]",
+    "risk": "safe",
+    "reasoning": "I need to sign in first - entering the [REDACTED:[REDACTED:operator_user]_user] username from the provided parameters",
+    "expect": "USER ID field filled"
+  },
+  "element": {
+    "ref": "e1",
+    "role": "textbox",
+    "name": "USER ID",
+    "frame": null,
+    "candidate_locators": [
+      "label_adjacent='USER ID'",
+      "css='input[name=\"userid\"]'",
+      "xpath='/html[1]/body[1]/center[1]/form[1]/table[1]/tbody[1]/tr[2]/td[2]/input[1]'"
+    ]
+  },
+  "url_after": "http://localhost:5000/",
+  "expect_seen": false,
+  "extracted": null,
+  "error": null,
+  "duration_ms": 7247,
+  "human_intervention": null
+}

@@ -1,0 +1,16 @@
+{
+  "index": 5,
+  "timestamp": "2026-09-09T00:43:22.747+00:00",
+  "mode": "replay",
+  "step_id": "s05",
+  "action": "type",
+  "status": "ok",
+  "locator_used": "label_adjacent='MEMBER NUMBER'",
+  "locator_attempts": [
+    "label_adjacent='MEMBER NUMBER' -> OK"
+  ],
+  "value": "99999",
+  "observed": "",
+  "duration_ms": 32,
+  "attempt": 1
+}

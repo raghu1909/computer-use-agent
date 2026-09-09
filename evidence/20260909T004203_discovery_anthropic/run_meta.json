@@ -1,0 +1,24 @@
+{
+  "run_id": "20260909T004203_discovery_anthropic",
+  "mode": "discovery",
+  "started_at": "2026-09-09T00:42:03.566+00:00",
+  "goal": "Look up member 12345 and read their current savings balance",
+  "entry_url": "http://localhost:5000/",
+  "params": {
+    "member_id": "12345"
+  },
+  "secret_params": [
+    "[REDACTED:[REDACTED:[REDACTED:[REDACTED:[REDACTED:[REDACTED:[REDACTED:[REDACTED:operator_user]_user]_user]_user]_user]_user]_user]_user]_user",
+    "[REDACTED:[REDACTED:[REDACTED:[REDACTED:[REDACTED:[REDACTED:[REDACTED:[REDACTED:operator_user]_user]_user]_user]_user]_user]_user]_user]_password"
+  ],
+  "llm": "anthropic:claude-sonnet-4-5",
+  "max_steps": 25,
+  "finished_at": "2026-09-09T00:44:35.509+00:00",
+  "duration_s": 151.94,
+  "status": "success",
+  "llm_usage": {
+    "input_tokens": 33898,
+    "output_tokens": 2203,
+    "calls": 12
+  }
+}

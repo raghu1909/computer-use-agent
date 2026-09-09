@@ -1,0 +1,31 @@
+{
+  "index": 7,
+  "timestamp": "2026-09-09T00:42:54.454+00:00",
+  "mode": "discovery",
+  "url_before": "http://localhost:5000/members/12345",
+  "fingerprint_before": "2e1810a725194d09",
+  "decision": {
+    "action": "extract",
+    "ref": "e13",
+    "output_name": "savings_balance",
+    "risk": "safe",
+    "reasoning": "The screen shows member 12345's detail page with the savings balance clearly displayed as 4,812.37. Extracting this value from element e13 which contains \"SAVINGS BALANCE -> 4,812.37\".",
+    "expect": "4,812.37"
+  },
+  "element": {
+    "ref": "e13",
+    "role": "cell",
+    "name": "SAVINGS BALANCE",
+    "frame": "mainframe",
+    "candidate_locators": [
+      "label_adjacent='SAVINGS BALANCE' in frame 'mainframe'",
+      "xpath='/html[1]/body[1]/div[1]/table[1]/tbody[1]/tr[5]/td[2]' in frame 'mainframe'"
+    ]
+  },
+  "url_after": "http://localhost:5000/members/12345",
+  "expect_seen": true,
+  "extracted": "4,812.37",
+  "error": null,
+  "duration_ms": 6319,
+  "human_intervention": null
+}

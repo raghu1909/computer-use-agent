@@ -1,0 +1,17 @@
+{
+  "id": "24fea91f",
+  "run_id": "20260909T010538_replay_handoff",
+  "mode": "replay",
+  "capability": "member_savings_balance",
+  "step_id": "s07",
+  "reason": "automation stuck (http_error_page)",
+  "detail": "extract target: label_adjacent='SAVINGS BALANCE' in frame 'mainframe' | xpath='/html[1]/body[1]/div[1]/table[1]/tbody[1]/tr[5]/td[2]' in frame 'mainframe' | observed: error page signature: 'HTTP 500'",
+  "url": "http://localhost:5000/members/12345",
+  "created_at": "2026-09-09T01:05:55.016+00:00",
+  "state": "open",
+  "controller": "human",
+  "human_actions": [],
+  "notes": "",
+  "resume_from_step": null,
+  "resolved_at": null
+}

@@ -1,0 +1,104 @@
+[
+  {
+    "index": 1,
+    "timestamp": "2026-09-09T00:44:41.162+00:00",
+    "mode": "replay",
+    "step_id": "s01",
+    "action": "click",
+    "status": "ok",
+    "locator_used": "label_adjacent='USER ID'",
+    "locator_attempts": [
+      "label_adjacent='USER ID' -> OK"
+    ],
+    "value": null,
+    "observed": "",
+    "duration_ms": 53,
+    "attempt": 1
+  },
+  {
+    "index": 2,
+    "timestamp": "2026-09-09T00:44:41.214+00:00",
+    "mode": "replay",
+    "step_id": "s02",
+    "action": "type",
+    "status": "ok",
+    "locator_used": "label_adjacent='USER ID'",
+    "locator_attempts": [
+      "label_adjacent='USER ID' -> OK"
+    ],
+    "value": "[REDACTED]",
+    "observed": "",
+    "duration_ms": 13,
+    "attempt": 1
+  },
+  {
+    "index": 3,
+    "timestamp": "2026-09-09T00:44:41.260+00:00",
+    "mode": "replay",
+    "step_id": "s03",
+    "action": "type",
+    "status": "ok",
+    "locator_used": "label_adjacent='PASSWORD'",
+    "locator_attempts": [
+      "label_adjacent='PASSWORD' -> OK"
+    ],
+    "value": "[REDACTED]",
+    "observed": "",
+    "duration_ms": 12,
+    "attempt": 1
+  },
+  {
+    "index": 4,
+    "timestamp": "2026-09-09T00:44:41.359+00:00",
+    "mode": "replay",
+    "step_id": "s04",
+    "action": "click",
+    "status": "ok",
+    "locator_used": "role=button name='SIGN ON'",
+    "locator_attempts": [
+      "role=button name='SIGN ON' -> OK"
+    ],
+    "value": null,
+    "observed": "",
+    "duration_ms": 57,
+    "attempt": 1
+  },
+  {
+    "index": 5,
+    "timestamp": "2026-09-09T00:44:41.428+00:00",
+    "mode": "replay",
+    "step_id": "s05",
+    "action": "type",
+    "status": "ok",
+    "locator_used": "label_adjacent='MEMBER NUMBER'",
+    "locator_attempts": [
+      "label_adjacent='MEMBER NUMBER' -> OK"
+    ],
+    "value": "99999",
+    "observed": "",
+    "duration_ms": 31,
+    "attempt": 1
+  },
+  {
+    "index": 6,
+    "timestamp": "2026-09-09T00:44:46.561+00:00",
+    "mode": "replay",
+    "step_id": "s06",
+    "action": "click",
+    "status": "outcome",
+    "locator_used": "role=button name='INQUIRE'",
+    "locator_attempts": [
+      "role=button name='INQUIRE' -> OK"
+    ],
+    "value": null,
+    "observed": "url_contains='/members/99999' not met; observed url=http://localhost:5000/members/search",
+    "duration_ms": 5096,
+    "attempt": 1
+  },
+  {
+    "kind": "business_outcome",
+    "timestamp": "2026-09-09T00:44:46.561+00:00",
+    "code": "MEMBER_NOT_FOUND",
+    "step_id": "s06"
+  }
+]

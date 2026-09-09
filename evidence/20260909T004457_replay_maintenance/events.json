@@ -1,0 +1,144 @@
+[
+  {
+    "index": 1,
+    "timestamp": "2026-09-09T00:44:57.462+00:00",
+    "mode": "replay",
+    "step_id": "s01",
+    "action": "click",
+    "status": "ok",
+    "locator_used": "label_adjacent='USER ID'",
+    "locator_attempts": [
+      "label_adjacent='USER ID' -> OK"
+    ],
+    "value": null,
+    "observed": "",
+    "duration_ms": 54,
+    "attempt": 1
+  },
+  {
+    "index": 2,
+    "timestamp": "2026-09-09T00:44:57.511+00:00",
+    "mode": "replay",
+    "step_id": "s02",
+    "action": "type",
+    "status": "ok",
+    "locator_used": "label_adjacent='USER ID'",
+    "locator_attempts": [
+      "label_adjacent='USER ID' -> OK"
+    ],
+    "value": "[REDACTED]",
+    "observed": "",
+    "duration_ms": 12,
+    "attempt": 1
+  },
+  {
+    "index": 3,
+    "timestamp": "2026-09-09T00:44:57.560+00:00",
+    "mode": "replay",
+    "step_id": "s03",
+    "action": "type",
+    "status": "ok",
+    "locator_used": "label_adjacent='PASSWORD'",
+    "locator_attempts": [
+      "label_adjacent='PASSWORD' -> OK"
+    ],
+    "value": "[REDACTED]",
+    "observed": "",
+    "duration_ms": 14,
+    "attempt": 1
+  },
+  {
+    "index": 4,
+    "timestamp": "2026-09-09T00:44:57.644+00:00",
+    "mode": "replay",
+    "step_id": "s04",
+    "action": "click",
+    "status": "ok",
+    "locator_used": "role=button name='SIGN ON'",
+    "locator_attempts": [
+      "role=button name='SIGN ON' -> OK"
+    ],
+    "value": null,
+    "observed": "",
+    "duration_ms": 57,
+    "attempt": 1
+  },
+  {
+    "index": 5,
+    "timestamp": "2026-09-09T00:44:57.710+00:00",
+    "mode": "replay",
+    "step_id": "s05",
+    "action": "type",
+    "status": "ok",
+    "locator_used": "label_adjacent='MEMBER NUMBER'",
+    "locator_attempts": [
+      "label_adjacent='MEMBER NUMBER' -> OK"
+    ],
+    "value": "12345",
+    "observed": "",
+    "duration_ms": 31,
+    "attempt": 1
+  },
+  {
+    "index": 6,
+    "timestamp": "2026-09-09T00:44:58.845+00:00",
+    "mode": "replay",
+    "step_id": "s06",
+    "action": "click",
+    "status": "ok",
+    "locator_used": "role=button name='INQUIRE'",
+    "locator_attempts": [
+      "role=button name='INQUIRE' -> OK"
+    ],
+    "value": null,
+    "observed": "",
+    "duration_ms": 1100,
+    "attempt": 1
+  },
+  {
+    "index": 7,
+    "timestamp": "2026-09-09T00:45:10.896+00:00",
+    "mode": "replay",
+    "step_id": "s07",
+    "action": "extract",
+    "status": "recovered",
+    "locator_used": null,
+    "locator_attempts": [
+      "label_adjacent='SAVINGS BALANCE' in frame 'mainframe' -> TimeoutError",
+      "xpath='/html[1]/body[1]/div[1]/table[1]/tbody[1]/tr[5]/td[2]' in frame 'mainframe' -> TimeoutError"
+    ],
+    "value": null,
+    "observed": "no locator resolved:\n  label_adjacent='SAVINGS BALANCE' in frame 'mainframe' -> TimeoutError\n  xpath='/html[1]/body[1]/div[1]/table[1]/tbody[1]/tr[5]/td[2]' in frame 'mainframe' -> TimeoutError -> recovery SYSTEM_NOTICE_MAINTENANCE",
+    "duration_ms": 12013,
+    "attempt": 1
+  },
+  {
+    "kind": "recovery",
+    "timestamp": "2026-09-09T00:45:10.896+00:00",
+    "code": "SYSTEM_NOTICE_MAINTENANCE",
+    "step_id": "s07"
+  },
+  {
+    "index": 8,
+    "timestamp": "2026-09-09T00:45:10.982+00:00",
+    "mode": "replay",
+    "step_id": "s07",
+    "action": "extract",
+    "status": "ok",
+    "locator_used": "label_adjacent='SAVINGS BALANCE' in frame 'mainframe'",
+    "locator_attempts": [
+      "label_adjacent='SAVINGS BALANCE' in frame 'mainframe' -> OK"
+    ],
+    "value": null,
+    "observed": "savings_balance='4812.37'",
+    "duration_ms": 8,
+    "attempt": 2
+  },
+  {
+    "kind": "drift_check",
+    "timestamp": "2026-09-09T00:45:14.003+00:00",
+    "recorded": "94d557812ef0c478",
+    "current": "94d557812ef0c478",
+    "drift": false
+  }
+]

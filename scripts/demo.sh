@@ -26,7 +26,7 @@ $CUA discover \
   --probe "not_found={\"params\":{\"member_id\":\"99999\"}}" \
   --probe "session_timeout={\"entry_url\":\"$TARGET/?force_error=session_timeout\"}" \
   --probe "maintenance={\"entry_url\":\"$TARGET/?force_error=maintenance_notice\"}" \
-  --approve --no-handoff --label "$LLM"
+  --name member_savings_balance --approve --no-handoff --label "$LLM"
 
 ART=capabilities/member_savings_balance.v1.json
 

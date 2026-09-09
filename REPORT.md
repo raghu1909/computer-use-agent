@@ -24,8 +24,18 @@ or *stuck* (screen fingerprint unchanged after N actions) which escalates to a h
 single **distill** call names the capability, describes params/outputs/steps and flags risky steps; then
 **probes** replay the fresh artifact against adversarial inputs (unknown member, injected timeout) and, on
 the first failure, ask the model to classify the screen once — the answer is encoded as an `OutcomeRule` or
-`RecoveryRule` and verified by another replay. This is how the artifact learns the exceptional states
-without a human authoring them.
+`RecoveryRule` and verified by another replay. Verification is strict — a recovery must produce `success`
+*with that recovery applied*, an outcome must produce *that* outcome code — and a rule that fails
+verification is dropped rather than shipped (an unverified rule that misclassifies a timeout as "member not
+found" is worse than no rule). One deterministic fallback is tried first: if the model's `retry_from_step`
+is too late (typed input was lost with the interstitial), resume from the first `type` step of that form.
+This is how the artifact learns the exceptional states without a human authoring them.
+
+The genuine model run (evidence `*_discovery_anthropic`, claude-sonnet-4-5, 12 calls) found three things the
+scripted LLM could not, all now fixed and tested: the model's `expect` texts carried the concrete member id
+and the extracted balance into checkpoints (recorder now templatizes expectations and drops data-like ones);
+it first chose the submit click as the resume point after a session expiry (strict verification + fallback
+above); and a runtime `cast` to a type-only import crashed the adapter. Real discovery is not optional.
 
 **Recorder** (`artifact/recorder.py`) turns the transcript into the artifact: concrete values become
 `{param}` templates (caller declares params up front — the recorder cannot guess that "12345" is a member

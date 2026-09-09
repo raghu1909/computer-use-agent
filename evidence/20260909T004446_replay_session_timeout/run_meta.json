@@ -1,0 +1,19 @@
+{
+  "run_id": "20260909T004446_replay_session_timeout",
+  "mode": "replay",
+  "started_at": "2026-09-09T00:44:46.739+00:00",
+  "capability": "member_savings_balance",
+  "capability_version": 1,
+  "params": {
+    "member_id": "12345",
+    "operator_user": "[REDACTED]",
+    "operator_password": "[REDACTED]"
+  },
+  "entry_url": "http://localhost:5000/?force_error=session_timeout",
+  "finished_at": "2026-09-09T00:44:56.871+00:00",
+  "duration_s": 10.13,
+  "status": "success",
+  "outputs": {
+    "savings_balance": "4812.37"
+  }
+}

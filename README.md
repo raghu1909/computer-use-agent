@@ -40,8 +40,10 @@ Configuration (all optional; copy `.env.example`):
 
 No live services are required. The target is a local mock and the discovery loop has a **scripted LLM
 mode** (`--llm scripted:FILE`) that exercises the identical perceive→decide→act→record code path without a
-key. The test suite and the `evidence/` in this repo were produced that way; use `--llm anthropic` for a
-genuine model-driven run.
+key. The test suite uses it. The checked-in `evidence/` comes from a **genuine `claude-sonnet-4-5` run**
+(`evidence/*_discovery_anthropic`: 12 model calls, ~34k input tokens; the model's reasoning is in `steps/NNN.json`)
+plus the probes/replays/handoff executed against the artifact it produced; a scripted discovery run is kept
+alongside for offline comparison.
 
 ## Target application
 
@@ -77,7 +79,7 @@ cua discover \
   --probe 'not_found={"params":{"member_id":"99999"}}' \
   --probe 'session_timeout={"entry_url":"http://localhost:5000/?force_error=session_timeout"}' \
   --probe 'maintenance={"entry_url":"http://localhost:5000/?force_error=maintenance_notice"}' \
-  --approve --label anthropic
+  --name member_savings_balance --approve --label anthropic
 ```
 
 Offline (no key, deterministic): replace `--llm anthropic` with `--llm scripted:examples/scripted_savings_balance.json`.
@@ -130,6 +132,11 @@ evidence/<ts>_<mode>_<label>/
   handoff/<id>/          request.json, screenshots before/after, resolution.json (human actions, a11y diff)
   artifact.json          (discovery) the emitted capability
 ```
+
+What is checked in: `*_discovery_anthropic` (the real model run) → `*_probe_*` / `*_probe_verify_*` (adversarial
+probes and the verification replays that gate each encoded rule) → `*_replay_{happy,not_found,session_timeout,
+maintenance,app_error,bad_input,stability}` → `*_replay_handoff` (injected 500 → operator fixes the live session
+→ resume). `*_discovery_scripted` is the same flow driven by the fixture LLM.
 
 ## Tests & checks
 

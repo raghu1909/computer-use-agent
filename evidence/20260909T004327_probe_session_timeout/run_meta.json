@@ -1,0 +1,17 @@
+{
+  "run_id": "20260909T004327_probe_session_timeout",
+  "mode": "probe",
+  "started_at": "2026-09-09T00:43:27.883+00:00",
+  "capability": "lookup_member_savings_balance",
+  "capability_version": 1,
+  "params": {
+    "member_id": "12345",
+    "operator_user": "[REDACTED]",
+    "operator_password": "[REDACTED]"
+  },
+  "entry_url": "http://localhost:5000/?force_error=session_timeout",
+  "finished_at": "2026-09-09T00:43:38.430+00:00",
+  "duration_s": 10.55,
+  "status": "failure",
+  "failure_kind": "checkpoint_failed"
+}

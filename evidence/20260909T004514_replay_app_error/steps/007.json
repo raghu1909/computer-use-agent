@@ -1,0 +1,17 @@
+{
+  "index": 7,
+  "timestamp": "2026-09-09T00:45:29.063+00:00",
+  "mode": "replay",
+  "step_id": "s07",
+  "action": "extract",
+  "status": "failed",
+  "locator_used": null,
+  "locator_attempts": [
+    "label_adjacent='SAVINGS BALANCE' in frame 'mainframe' -> TimeoutError",
+    "xpath='/html[1]/body[1]/div[1]/table[1]/tbody[1]/tr[5]/td[2]' in frame 'mainframe' -> TimeoutError"
+  ],
+  "value": null,
+  "observed": "no locator resolved:\n  label_adjacent='SAVINGS BALANCE' in frame 'mainframe' -> TimeoutError\n  xpath='/html[1]/body[1]/div[1]/table[1]/tbody[1]/tr[5]/td[2]' in frame 'mainframe' -> TimeoutError",
+  "duration_ms": 13019,
+  "attempt": 1
+}

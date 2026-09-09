@@ -16,6 +16,9 @@ def test_discovery_produces_reviewable_artifact(artifact, tmp_path):
     assert artifact.steps[3].value == "{member_id}"  # concrete value parameterised
     assert artifact.steps[1].value == "{operator_password}"  # secret templated, not stored
     assert "letmein-demo" not in artifact.to_json()
+    # discovery-run values must not survive anywhere (a raw '12345' in a wait/checkpoint would break other inputs)
+    for cond in [c for s in artifact.steps for c in s.wait_for] + artifact.success_checkpoint:
+        assert "12345" not in cond.value
     assert artifact.steps[5].locators[0].strategy.value == "label_adjacent"
     assert artifact.steps[5].locators[0].frame == "mainframe"  # frameset handled
     assert [o.name for o in artifact.outputs] == ["savings_balance"]

@@ -1,0 +1,9 @@
+{
+  "step_id": null,
+  "kind": "param_invalid",
+  "expected": "valid parameters",
+  "observed": "parameter 'member_id' does not match /\\d+/",
+  "locator_attempts": [],
+  "url": "about:blank",
+  "evidence_dir": "evidence/20260909T004531_replay_bad_input"
+}

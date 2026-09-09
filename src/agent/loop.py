@@ -37,6 +37,7 @@ from artifact.schema import (
 from handoff.manager import HandoffAborted, HandoffManager
 from observability.runlog import RunLog
 from replay.engine import ReplayEngine
+from replay.result import ReplayResult
 from safety.policy import Guardrails, classify_risk
 from surface.base import ResolveError, Surface
 
@@ -288,13 +289,58 @@ class DiscoveryAgent:
         else:
             report["encoded"] = None
             return report
-        # verify: the rule must change the result of a fresh replay
+        # verify: a fresh replay must now reach the state the rule claims, not merely stop differently
         verify_log = RunLog("probe_verify", root=self.runlog.dir.parent, redactor=self.runlog.redactor, label=label)
-        probe_artifact = artifact.model_copy(update={"entry_url": entry_url or artifact.entry_url}, deep=True)
-        second = ReplayEngine(self.surface, verify_log).replay(probe_artifact, params, secrets)
+        second = self._verify(artifact, params, secrets, entry_url, verify_log)
         report["verify_replay"] = second.summary()
-        report["verified"] = second.status in ("success", "business_outcome")
+        report["verified"] = self._rule_verified(cls.kind, cls.code, second)
+        if not report["verified"] and cls.kind == "recoverable" and rule.retry_from_step:
+            # The model's resume point was too late (typed input was lost with the interstitial):
+            # deterministically fall back to the first type step of the form being submitted and re-verify.
+            fallback = self._form_start(artifact, rule.retry_from_step)
+            if fallback != rule.retry_from_step:
+                rule.retry_from_step = fallback
+                verify_log = RunLog(
+                    "probe_verify", root=self.runlog.dir.parent, redactor=self.runlog.redactor, label=f"{label}_2"
+                )
+                second = self._verify(artifact, params, secrets, entry_url, verify_log)
+                report["verify_replay"] = second.summary()
+                report["verified"] = self._rule_verified(cls.kind, cls.code, second)
+                report["encoded"] = f"recovery {cls.code} (global) retry_from={fallback} (adjusted)"
+        if not report["verified"]:
+            # never ship a rule that does not demonstrably work; the probe evidence still records the attempt
+            if cls.kind == "business_outcome":
+                step.outcomes.remove(step.outcomes[-1])
+            else:
+                artifact.global_recoveries.remove(rule)
+            report["encoded"] = f"{report['encoded']} -> dropped (verification failed)"
         return report
+
+    def _verify(
+        self,
+        artifact: CapabilityArtifact,
+        params: dict[str, str],
+        secrets: dict[str, str],
+        entry_url: str | None,
+        log: RunLog,
+    ) -> ReplayResult:
+        probe_artifact = artifact.model_copy(update={"entry_url": entry_url or artifact.entry_url}, deep=True)
+        return ReplayEngine(self.surface, log).replay(probe_artifact, params, secrets)
+
+    @staticmethod
+    def _rule_verified(kind: str, code: str, res: ReplayResult) -> bool:
+        if kind == "business_outcome":
+            return res.status == "business_outcome" and res.outcome is not None and res.outcome.code == code
+        return res.status == "success" and code in res.recoveries
+
+    @staticmethod
+    def _form_start(artifact: CapabilityArtifact, step_id: str) -> str:
+        """Earliest step of the contiguous run of type steps that leads up to (and includes) step_id."""
+        ids = [s.step_id for s in artifact.steps]
+        i = ids.index(step_id)
+        while i > 0 and artifact.steps[i - 1].action == ActionType.TYPE:
+            i -= 1
+        return ids[i]
 
     # ------------------------------------------------------------------------
     def _escalate(self, goal: str, reason: str, detail: str) -> str | None:

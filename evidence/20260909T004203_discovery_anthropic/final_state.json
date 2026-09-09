@@ -1,0 +1,73 @@
+{
+  "status": "success",
+  "steps": 8,
+  "llm_calls": 12,
+  "reason": "Step 7 successfully extracted the savings balance of 4,812.37 from element e13, which was the goal of the task.",
+  "artifact_path": "capabilities/member_savings_balance.v1.json",
+  "handoffs": [],
+  "probes": [
+    {
+      "label": "not_found",
+      "params": {
+        "member_id": "99999"
+      },
+      "entry_url": "http://localhost:5000/",
+      "first_replay": "FAILURE at s06 [checkpoint_failed] expected: after click: url_contains '/members/99999' | observed: still not met after 2 waits",
+      "evidence": "evidence/20260909T004306_probe_not_found",
+      "classification": {
+        "kind": "business_outcome",
+        "code": "MEMBER_NOT_FOUND",
+        "match_text": "NO MEMBER FOUND FOR NUMBER",
+        "message": "Member lookup returned no results - the member number was not found in the system.",
+        "clear_ref": null,
+        "retry_from_step": null,
+        "reasoning": "The screen shows \"NO MEMBER FOUND FOR NUMBER 99999\" which is a legitimate business outcome indicating the member lookup failed because the member does not exist in the system. The goal was to look up member 12345, but the screen shows a search for member 99999 returned no results. This is a terminal state for this invocation - the caller needs to be informed that the member was not found. This is not a recoverable error or a system failure, but rather a valid business result that must be communicated back."
+      },
+      "encoded": "outcome MEMBER_NOT_FOUND on s06",
+      "verify_replay": "OUTCOME MEMBER_NOT_FOUND: Member lookup returned no results - the member number was not found in the system. (at s06)",
+      "verified": true
+    },
+    {
+      "label": "session_timeout",
+      "params": {
+        "member_id": "12345"
+      },
+      "entry_url": "http://localhost:5000/?force_error=session_timeout",
+      "first_replay": "FAILURE at s06 [checkpoint_failed] expected: after click: url_contains '/members/12345' | observed: still not met after 2 waits",
+      "evidence": "evidence/20260909T004327_probe_session_timeout",
+      "classification": {
+        "kind": "recoverable",
+        "code": "SESSION_EXPIRED",
+        "match_text": "YOUR SESSION HAS EXPIRED DUE TO INACTIVITY",
+        "message": "Session expired due to inactivity. Will continue session and retry from member number entry.",
+        "clear_ref": "e1",
+        "retry_from_step": "s05",
+        "reasoning": "The automation encountered a session expiration interstitial. The screen shows \"SESSION EXPIRED\" and prompts the user to press \"CONTINUE SESSION\" to re-establish the session. This is a transient state that can be cleared by clicking the \"CONTINUE SESSION\" button. After clearing this, the automation should retry from step s05 (entering the member number into the textbox) since the form state may have been lost when the session expired. Step s06 was attempting to click INQUIRE to submit, so we need to go back to the step where data was first entered into the search form."
+      },
+      "encoded": "recovery SESSION_EXPIRED (global) retry_from=s05",
+      "verify_replay": "SUCCESS outputs={'savings_balance': '4812.37'}",
+      "verified": true
+    },
+    {
+      "label": "maintenance",
+      "params": {
+        "member_id": "12345"
+      },
+      "entry_url": "http://localhost:5000/?force_error=maintenance_notice",
+      "first_replay": "FAILURE at s07 [locator_unresolved] expected: extract target: label_adjacent='SAVINGS BALANCE' in frame 'mainframe' | xpath='/html[1]/body[1]/div[1]/table[1]/tbody[1]/tr[5]/td[2]' in frame 'mainframe' | observed: no locator matched",
+      "evidence": "evidence/20260909T004354_probe_maintenance",
+      "classification": {
+        "kind": "recoverable",
+        "code": "SYSTEM_NOTICE_MAINTENANCE",
+        "match_text": "SCHEDULED MAINTENANCE TONIGHT 23:00-01:00 CST. TRANSACTIONS MAY BE DELAYED.",
+        "message": "System maintenance notice appeared and must be acknowledged to continue",
+        "clear_ref": "e6",
+        "retry_from_step": "s07",
+        "reasoning": "Step s07 was attempting to extract the savings balance from the member detail page, but a system notice modal/overlay has appeared that must be acknowledged before continuing. The main frame shows a timeout error, while the mainframe shows a \"SYSTEM NOTICE\" about scheduled maintenance that blocks access to the underlying member detail content. This is a transient interstitial that can be cleared by clicking the ACKNOWLEDGE button, then retrying from step s07 to extract the balance value."
+      },
+      "encoded": "recovery SYSTEM_NOTICE_MAINTENANCE (global) retry_from=s07",
+      "verify_replay": "SUCCESS outputs={'savings_balance': '4812.37'}",
+      "verified": true
+    }
+  ]
+}

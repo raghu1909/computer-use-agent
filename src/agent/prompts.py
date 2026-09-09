@@ -31,7 +31,7 @@ def render_step(goal: str, perception_text: str, elements_text: str, history: li
 
 CLASSIFY_SYSTEM = """You are reviewing a screen where a recorded UI automation stopped unexpectedly. Classify the state:
 - business_outcome: a legitimate result the caller must be told about (record not found, validation error, permission denied). Terminal for this invocation.
-- recoverable: a known interstitial or transient the automation can clear and then continue (session expired -> press continue; a notice to acknowledge; a slow load). Give clear_ref (the element to click) and retry_from_step (which recorded step to resume from; the step that was in progress is usually right when the interstitial replaced the form; use the step where typed input must be re-entered).
+- recoverable: a known interstitial or transient the automation can clear and then continue (session expired -> press continue; a notice to acknowledge; a slow load). Give clear_ref (the element to click) and retry_from_step (which recorded step to resume from; the step that was in progress is usually right when the interstitial replaced the form; use the step where typed input must be re-entered: if the interstitial replaced a form, resume from the FIRST step that typed into that form, not the click that submitted it).
 - hard_failure: the application is broken or in an unknown state (HTTP 500, blank page). Not something to encode.
 Return a SHORT_UPPER_SNAKE code, and match_text: the most stable operator-facing phrase that identifies this state (avoid variable parts like IDs or amounts)."""
 
