@@ -108,7 +108,7 @@ class AnthropicLLM(LLM):
             system=system,
             tools=[tool],
             tool_choice={"type": "tool", "name": "respond"},
-            messages=[cast(MessageParam, {"role": "user", "content": content})],
+            messages=[cast("MessageParam", {"role": "user", "content": content})],
         )
         self.usage["calls"] += 1
         self.usage["input_tokens"] += resp.usage.input_tokens
