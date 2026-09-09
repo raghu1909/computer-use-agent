@@ -1,0 +1,88 @@
+[
+  {
+    "index": 1,
+    "timestamp": "2026-09-09T00:15:54.749+00:00",
+    "mode": "replay",
+    "step_id": "s01",
+    "action": "type",
+    "status": "ok",
+    "locator_used": "label_adjacent='USER ID'",
+    "locator_attempts": [
+      "label_adjacent='USER ID' -> OK"
+    ],
+    "value": "[REDACTED]",
+    "observed": "",
+    "duration_ms": 35,
+    "attempt": 1
+  },
+  {
+    "index": 2,
+    "timestamp": "2026-09-09T00:15:54.797+00:00",
+    "mode": "replay",
+    "step_id": "s02",
+    "action": "type",
+    "status": "ok",
+    "locator_used": "label_adjacent='PASSWORD'",
+    "locator_attempts": [
+      "label_adjacent='PASSWORD' -> OK"
+    ],
+    "value": "[REDACTED]",
+    "observed": "",
+    "duration_ms": 14,
+    "attempt": 1
+  },
+  {
+    "index": 3,
+    "timestamp": "2026-09-09T00:15:54.899+00:00",
+    "mode": "replay",
+    "step_id": "s03",
+    "action": "click",
+    "status": "ok",
+    "locator_used": "role=button name='SIGN ON'",
+    "locator_attempts": [
+      "role=button name='SIGN ON' -> OK"
+    ],
+    "value": null,
+    "observed": "",
+    "duration_ms": 74,
+    "attempt": 1
+  },
+  {
+    "index": 4,
+    "timestamp": "2026-09-09T00:15:54.947+00:00",
+    "mode": "replay",
+    "step_id": "s04",
+    "action": "type",
+    "status": "ok",
+    "locator_used": "label_adjacent='MEMBER NUMBER'",
+    "locator_attempts": [
+      "label_adjacent='MEMBER NUMBER' -> OK"
+    ],
+    "value": "99999",
+    "observed": "",
+    "duration_ms": 23,
+    "attempt": 1
+  },
+  {
+    "index": 5,
+    "timestamp": "2026-09-09T00:16:00.082+00:00",
+    "mode": "replay",
+    "step_id": "s05",
+    "action": "click",
+    "status": "outcome",
+    "locator_used": "role=button name='INQUIRE'",
+    "locator_attempts": [
+      "role=button name='INQUIRE' -> OK"
+    ],
+    "value": null,
+    "observed": "url_contains='/members/99999' not met; observed url=http://localhost:5000/members/search",
+    "duration_ms": 5100,
+    "attempt": 1
+  },
+  {
+    "kind": "business_outcome",
+    "timestamp": "2026-09-09T00:16:00.082+00:00",
+    "code": "MEMBER_NOT_FOUND",
+    "step_id": "s05"
+  }
+]

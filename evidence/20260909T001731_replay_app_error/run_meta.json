@@ -1,0 +1,17 @@
+{
+  "run_id": "20260909T001731_replay_app_error",
+  "mode": "replay",
+  "started_at": "2026-09-09T00:17:31.172+00:00",
+  "capability": "member_savings_balance",
+  "capability_version": 1,
+  "params": {
+    "member_id": "12345",
+    "operator_user": "[REDACTED]",
+    "operator_password": "[REDACTED]"
+  },
+  "entry_url": "http://localhost:5000/?force_error=app_error",
+  "finished_at": "2026-09-09T00:17:43.828+00:00",
+  "duration_s": 12.66,
+  "status": "failure",
+  "failure_kind": "http_error_page"
+}

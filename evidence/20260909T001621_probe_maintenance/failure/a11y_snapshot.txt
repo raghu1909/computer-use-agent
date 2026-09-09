@@ -1,0 +1,38 @@
+### frame (main) — http://localhost:5000/members/12345
+(unavailable: TimeoutError)
+
+### frame navframe — http://localhost:5000/members/12345/nav
+- table:
+  - rowgroup:
+    - row "CORE-BANK/OS TELLER/SERVICING CONSOLE v7.2.14 NAV":
+      - cell "CORE-BANK/OS TELLER/SERVICING CONSOLE v7.2.14"
+      - cell "NAV"
+- table:
+  - rowgroup:
+    - row "MEMBER 12345 MEMBER DETAIL OPEN SUB-ACCOUNT NEW INQUIRY SIGN OFF":
+      - cell "MEMBER 12345 MEMBER DETAIL OPEN SUB-ACCOUNT NEW INQUIRY SIGN OFF":
+        - text: MEMBER 12345
+        - link "MEMBER DETAIL":
+          - /url: /members/12345/detail
+        - link "OPEN SUB-ACCOUNT":
+          - /url: /members/12345/accounts/new
+        - link "NEW INQUIRY":
+          - /url: /members
+        - link "SIGN OFF":
+          - /url: /logout
+
+### frame mainframe — http://localhost:5000/members/12345/detail
+- table:
+  - rowgroup:
+    - row "CORE-BANK/OS TELLER/SERVICING CONSOLE v7.2.14 MEMBER DETAIL":
+      - cell "CORE-BANK/OS TELLER/SERVICING CONSOLE v7.2.14"
+      - cell "MEMBER DETAIL"
+- table:
+  - rowgroup:
+    - row "SYSTEM NOTICE":
+      - cell "SYSTEM NOTICE"
+    - row "SCHEDULED MAINTENANCE TONIGHT 23:00-01:00 CST. TRANSACTIONS MAY BE DELAYED.":
+      - cell "SCHEDULED MAINTENANCE TONIGHT 23:00-01:00 CST. TRANSACTIONS MAY BE DELAYED."
+    - row "ACKNOWLEDGE":
+      - cell "ACKNOWLEDGE":
+        - button "ACKNOWLEDGE"

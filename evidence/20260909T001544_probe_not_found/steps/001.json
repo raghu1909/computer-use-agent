@@ -1,0 +1,16 @@
+{
+  "index": 1,
+  "timestamp": "2026-09-09T00:15:44.180+00:00",
+  "mode": "replay",
+  "step_id": "s01",
+  "action": "type",
+  "status": "ok",
+  "locator_used": "label_adjacent='USER ID'",
+  "locator_attempts": [
+    "label_adjacent='USER ID' -> OK"
+  ],
+  "value": "[REDACTED]",
+  "observed": "",
+  "duration_ms": 39,
+  "attempt": 1
+}

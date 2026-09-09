@@ -109,20 +109,37 @@ def cmd_replay(a: argparse.Namespace) -> int:
     secrets.update(_secrets_from_env([p.name for p in artifact.parameters if p.sensitive]))
     if a.entry:
         artifact = artifact.model_copy(update={"entry_url": a.entry})
-    log = RunLog("replay", root=a.evidence, redactor=Redactor(secrets), label=a.label)
-    surface = BrowserSurface(headless=not a.headed, cdp_port=a.cdp_port)
-    handoff = None if a.no_handoff else HandoffManager(surface, log, port=a.operator_port, timeout_s=a.handoff_timeout)
-    engine = ReplayEngine(
-        surface, log, handoff=handoff, confirm_risky=a.confirm_risky, require_approved=a.require_approved
-    )
-    try:
-        res = engine.replay(artifact, params, secrets)
-        print(json.dumps(res.model_dump(mode="json", exclude={"trace"}), indent=2))
-        print(res.summary())
-        print(f"evidence: {log.dir}")
-        return {"success": 0, "business_outcome": 0, "failure": 2, "aborted": 3}[res.status]
-    finally:
-        surface.close()
+    repeat = getattr(a, "repeat", 1)
+    statuses: list[str] = []
+    rc = 0
+    for _ in range(repeat):
+        log = RunLog("replay", root=a.evidence, redactor=Redactor(secrets), label=a.label)
+        surface = BrowserSurface(headless=not a.headed, cdp_port=a.cdp_port)
+        handoff = (
+            None if a.no_handoff else HandoffManager(surface, log, port=a.operator_port, timeout_s=a.handoff_timeout)
+        )
+        engine = ReplayEngine(
+            surface,
+            log,
+            handoff=handoff,
+            confirm_risky=a.confirm_risky,
+            require_approved=a.require_approved,
+            deadline_ms=getattr(a, "deadline_ms", None),
+        )
+        try:
+            res = engine.replay(artifact, params, secrets)
+            print(json.dumps(res.model_dump(mode="json", exclude={"trace"}), indent=2))
+            print(res.summary())
+            print(f"evidence: {log.dir}")
+            statuses.append(res.status)
+            rc = {"success": 0, "business_outcome": 0, "failure": 2, "aborted": 3}[res.status]
+        finally:
+            surface.close()
+    if repeat > 1:
+        ok = sum(s in ("success", "business_outcome") for s in statuses)
+        print(f"stability: {ok}/{repeat} runs terminal-ok ({100 * ok // repeat}%) statuses={statuses}")
+        rc = 0 if ok == repeat else 2
+    return rc
 
 
 def cmd_catalog(a: argparse.Namespace) -> int:
@@ -187,6 +204,8 @@ def build_parser() -> argparse.ArgumentParser:
     r.add_argument("--entry", default=None, help="override entry URL (e.g. to inject ?force_error=)")
     r.add_argument("--confirm-risky", action="store_true", help="caller pre-confirms risky steps")
     r.add_argument("--require-approved", action="store_true")
+    r.add_argument("--repeat", type=int, default=1, help="replay N times and report a stability signal")
+    r.add_argument("--deadline-ms", type=int, default=None, help="override the artifact's wall-clock budget")
     r.set_defaults(fn=cmd_replay)
 
     c = sub.add_parser("catalog", help="list capabilities as agent-callable tools")

@@ -22,8 +22,10 @@ def test_discovery_produces_reviewable_artifact(artifact, tmp_path):
     assert any(c.kind.value == "url_contains" and "{member_id}" in c.value for c in artifact.success_checkpoint)
     # probes encoded outcome + recovery rules
     assert [o.code for o in artifact.steps[4].outcomes] == ["MEMBER_NOT_FOUND"]
-    assert [r.code for r in artifact.global_recoveries] == ["SESSION_EXPIRED"]
+    assert [r.code for r in artifact.global_recoveries] == ["SESSION_EXPIRED", "MAINTENANCE_NOTICE"]
     assert artifact.global_recoveries[0].retry_from_step == "s04"
+    assert artifact.global_recoveries[1].retry_from_step is None  # dismiss-and-continue interstitial
+    assert artifact.steps[4].retries == 1 and artifact.steps[3].retries == 0  # safe click retried, typing not
     # store round trip
     store = CapabilityStore(tmp_path / "caps")
     p = store.save(artifact)
@@ -76,6 +78,69 @@ def test_replay_tolerates_slow_load(artifact, surface, runlog, target_url):
     art = artifact.model_copy(update={"entry_url": f"{target_url}/?force_error=slow_load"})
     res = ReplayEngine(surface, runlog("replay")).replay(art, {"member_id": "12345"}, SECRETS)
     assert res.status == "success", res.summary()
+
+
+def test_replay_dismisses_maintenance_interstitial_and_continues(artifact, surface, runlog, target_url):
+    art = artifact.model_copy(update={"entry_url": f"{target_url}/?force_error=maintenance_notice"})
+    res = ReplayEngine(surface, runlog("replay")).replay(art, {"member_id": "12345"}, SECRETS)
+    assert res.status == "success", res.summary()
+    assert res.recoveries == ["MAINTENANCE_NOTICE"]
+    ids = [t.step_id for t in res.trace]
+    assert ids.count("s05") == 1  # cleared the overlay, did NOT re-click INQUIRE
+    assert res.outputs["savings_balance"] == "4812.37"
+
+
+def test_replay_retry_is_bounded_and_safe_only(artifact, surface, runlog):
+    art = artifact.model_copy(deep=True)
+    art.steps[4].wait_for[0].value = "TEXT THAT NEVER APPEARS"
+    art.steps[4].wait_for[0].timeout_ms = 500
+    art.steps[4].retries = 2
+    res = ReplayEngine(surface, runlog("replay")).replay(art, {"member_id": "12345"}, SECRETS)
+    assert res.status == "failure" and res.failure.kind == "checkpoint_failed" and res.failure.step_id == "s05"
+    assert [t.status for t in res.trace if t.step_id == "s05"] == ["retrying"] * 3 + ["failed"]
+    assert "3 waits" in res.failure.observed
+    art.steps[4].risk = RiskLevel.RISKY
+    res = ReplayEngine(surface, runlog("replay"), confirm_risky=True).replay(art, {"member_id": "12345"}, SECRETS)
+    assert [t.status for t in res.trace if t.step_id == "s05"] == ["failed"]  # risky: never doubled
+
+
+def test_replay_recovery_loop_is_bounded(artifact, surface, runlog, target_url):
+    art = artifact.model_copy(update={"entry_url": f"{target_url}/?force_error=session_timeout"}, deep=True)
+    art.global_recoveries[0].actions = []  # 'clearing' does nothing -> the same interstitial keeps matching
+    art.global_recoveries[0].max_attempts = 5
+    res = ReplayEngine(surface, runlog("replay"), max_recoveries=2).replay(art, {"member_id": "12345"}, SECRETS)
+    assert res.status == "failure" and res.recoveries == ["SESSION_EXPIRED", "SESSION_EXPIRED"]
+
+
+def test_replay_recovery_action_failure_is_reported(artifact, surface, runlog, target_url):
+    art = artifact.model_copy(update={"entry_url": f"{target_url}/?force_error=session_timeout"}, deep=True)
+    for loc in art.global_recoveries[0].actions[0].locators:
+        loc.value = "NO SUCH BUTTON"
+    art.global_recoveries[0].actions[0].timeout_ms = 800
+    res = ReplayEngine(surface, runlog("replay")).replay(art, {"member_id": "12345"}, SECRETS)
+    assert res.status == "failure" and res.failure.kind == "recovery_failed"
+    assert "SESSION_EXPIRED" in res.failure.expected
+
+
+def test_replay_wall_clock_deadline(artifact, surface, runlog):
+    res = ReplayEngine(surface, runlog("replay"), deadline_ms=1).replay(artifact, {"member_id": "12345"}, SECRETS)
+    assert res.status == "failure" and res.failure.kind == "timeout"
+
+
+def test_replay_unreachable_entry_is_a_clean_failure(artifact, surface, runlog):
+    art = artifact.model_copy(update={"entry_url": "http://127.0.0.1:1/"})
+    art.safety = art.safety.model_copy(update={"allowed_origins": ["http://127.0.0.1:1"]})
+    res = ReplayEngine(surface, runlog("replay")).replay(art, {"member_id": "12345"}, SECRETS)
+    assert res.status == "failure" and res.failure.kind == "unexpected_state" and res.failure.step_id is None
+
+
+def test_unexpected_js_dialog_is_dismissed_and_logged(artifact, surface, runlog, target_url):
+    surface.navigate(f"{target_url}/", 5000)
+    surface.page.evaluate("setTimeout(() => confirm('DELETE EVERYTHING?'), 50)")
+    surface.page.wait_for_timeout(300)
+    assert surface.drain_dialogs() == ["confirm: DELETE EVERYTHING?"]
+    assert surface.drain_dialogs() == []
+    assert "USER ID" in surface.a11y_dump()  # page still usable after auto-dismiss
 
 
 def test_replay_param_validation_before_touching_ui(artifact, surface, runlog):

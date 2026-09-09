@@ -143,6 +143,7 @@ class StepDef(BaseModel):
     outcomes: list[OutcomeRule] = Field(default_factory=list)
     recoveries: list[RecoveryRule] = Field(default_factory=list)
     timeout_ms: int = 10000
+    retries: int = 0  # extra attempts for transient slowness; replay only honours this on risk=safe steps
 
     @model_validator(mode="after")
     def _needs_target(self) -> StepDef:
@@ -189,6 +190,7 @@ class CapabilityArtifact(BaseModel):
     outputs: list[OutputDef]
     steps: list[StepDef]
     success_checkpoint: list[Condition]  # all must hold at the end
+    max_duration_ms: int | None = 120000  # wall-clock budget for one replay; None = unbounded
     global_outcomes: list[OutcomeRule] = Field(default_factory=list)  # checked after every step
     global_recoveries: list[RecoveryRule] = Field(default_factory=list)
     safety: SafetyPolicy

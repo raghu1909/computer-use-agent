@@ -1,0 +1,105 @@
+[
+  {
+    "index": 1,
+    "timestamp": "2026-09-09T00:16:54.562+00:00",
+    "mode": "replay",
+    "step_id": "s01",
+    "action": "type",
+    "status": "ok",
+    "locator_used": "label_adjacent='USER ID'",
+    "locator_attempts": [
+      "label_adjacent='USER ID' -> OK"
+    ],
+    "value": "[REDACTED]",
+    "observed": "",
+    "duration_ms": 48,
+    "attempt": 1
+  },
+  {
+    "index": 2,
+    "timestamp": "2026-09-09T00:16:54.610+00:00",
+    "mode": "replay",
+    "step_id": "s02",
+    "action": "type",
+    "status": "ok",
+    "locator_used": "label_adjacent='PASSWORD'",
+    "locator_attempts": [
+      "label_adjacent='PASSWORD' -> OK"
+    ],
+    "value": "[REDACTED]",
+    "observed": "",
+    "duration_ms": 12,
+    "attempt": 1
+  },
+  {
+    "index": 3,
+    "timestamp": "2026-09-09T00:16:54.712+00:00",
+    "mode": "replay",
+    "step_id": "s03",
+    "action": "click",
+    "status": "ok",
+    "locator_used": "role=button name='SIGN ON'",
+    "locator_attempts": [
+      "role=button name='SIGN ON' -> OK"
+    ],
+    "value": null,
+    "observed": "",
+    "duration_ms": 75,
+    "attempt": 1
+  },
+  {
+    "index": 4,
+    "timestamp": "2026-09-09T00:16:54.761+00:00",
+    "mode": "replay",
+    "step_id": "s04",
+    "action": "type",
+    "status": "ok",
+    "locator_used": "label_adjacent='MEMBER NUMBER'",
+    "locator_attempts": [
+      "label_adjacent='MEMBER NUMBER' -> OK"
+    ],
+    "value": "23456",
+    "observed": "",
+    "duration_ms": 21,
+    "attempt": 1
+  },
+  {
+    "index": 5,
+    "timestamp": "2026-09-09T00:16:56.889+00:00",
+    "mode": "replay",
+    "step_id": "s05",
+    "action": "click",
+    "status": "ok",
+    "locator_used": "role=button name='INQUIRE'",
+    "locator_attempts": [
+      "role=button name='INQUIRE' -> OK"
+    ],
+    "value": null,
+    "observed": "",
+    "duration_ms": 2100,
+    "attempt": 1
+  },
+  {
+    "index": 6,
+    "timestamp": "2026-09-09T00:16:56.945+00:00",
+    "mode": "replay",
+    "step_id": "s06",
+    "action": "extract",
+    "status": "ok",
+    "locator_used": "label_adjacent='SAVINGS BALANCE' in frame 'mainframe'",
+    "locator_attempts": [
+      "label_adjacent='SAVINGS BALANCE' in frame 'mainframe' -> OK"
+    ],
+    "value": null,
+    "observed": "savings_balance='250.00'",
+    "duration_ms": 17,
+    "attempt": 1
+  },
+  {
+    "kind": "drift_check",
+    "timestamp": "2026-09-09T00:16:59.970+00:00",
+    "recorded": "94d557812ef0c478",
+    "current": "36676993afe18304",
+    "drift": true
+  }
+]

@@ -1,0 +1,14 @@
+{
+  "index": 6,
+  "timestamp": "2026-09-09T00:16:36.481+00:00",
+  "mode": "replay",
+  "step_id": "s05",
+  "action": "click",
+  "status": "failed",
+  "locator_used": null,
+  "locator_attempts": [],
+  "value": null,
+  "observed": "",
+  "duration_ms": 14795,
+  "attempt": 2
+}

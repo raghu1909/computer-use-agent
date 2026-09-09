@@ -75,4 +75,7 @@ def artifact(target_url, surface, tmp_path_factory):
     assert art is not None
     agent.probe(art, {"member_id": "99999"}, SECRETS, "not_found")
     agent.probe(art, {"member_id": "12345"}, SECRETS, "timeout", entry_url=f"{target_url}/?force_error=session_timeout")
+    agent.probe(
+        art, {"member_id": "12345"}, SECRETS, "maintenance", entry_url=f"{target_url}/?force_error=maintenance_notice"
+    )
     return art

@@ -17,7 +17,9 @@ from pydantic import BaseModel, Field
 class StepTrace(BaseModel):
     step_id: str
     action: str
-    status: Literal["pending", "ok", "recovered", "outcome", "failed", "skipped", "blocked", "handoff"] = "pending"
+    status: Literal["pending", "ok", "recovered", "retrying", "outcome", "failed", "skipped", "blocked", "handoff"] = (
+        "pending"
+    )
     locator_used: str | None = None
     locator_attempts: list[str] = Field(default_factory=list)
     value: str | None = None
@@ -34,6 +36,8 @@ FailureKind = Literal[
     "unexpected_state",
     "handoff_aborted",
     "param_invalid",
+    "recovery_failed",
+    "timeout",
     "exception",
 ]
 

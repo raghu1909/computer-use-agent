@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0",
-  "capability_id": "93f8f5bc-8665-4da2-80ef-8b5399199d8e",
+  "capability_id": "51ec08ee-0b7c-4a76-bd8f-8281515bee5c",
   "name": "member_savings_balance",
   "version": 1,
   "status": "approved",
@@ -70,7 +70,8 @@
       "wait_for": [],
       "outcomes": [],
       "recoveries": [],
-      "timeout_ms": 10000
+      "timeout_ms": 10000,
+      "retries": 0
     },
     {
       "step_id": "s02",
@@ -101,7 +102,8 @@
       "wait_for": [],
       "outcomes": [],
       "recoveries": [],
-      "timeout_ms": 10000
+      "timeout_ms": 10000,
+      "retries": 0
     },
     {
       "step_id": "s03",
@@ -139,7 +141,8 @@
       ],
       "outcomes": [],
       "recoveries": [],
-      "timeout_ms": 10000
+      "timeout_ms": 10000,
+      "retries": 1
     },
     {
       "step_id": "s04",
@@ -170,7 +173,8 @@
       "wait_for": [],
       "outcomes": [],
       "recoveries": [],
-      "timeout_ms": 10000
+      "timeout_ms": 10000,
+      "retries": 0
     },
     {
       "step_id": "s05",
@@ -220,7 +224,8 @@
         }
       ],
       "recoveries": [],
-      "timeout_ms": 10000
+      "timeout_ms": 10000,
+      "retries": 1
     },
     {
       "step_id": "s06",
@@ -236,7 +241,7 @@
         },
         {
           "strategy": "xpath",
-          "value": "/html[1]/body[1]/table[2]/tbody[1]/tr[5]/td[2]",
+          "value": "/html[1]/body[1]/div[1]/table[1]/tbody[1]/tr[5]/td[2]",
           "frame": "mainframe",
           "exact": true,
           "rationale": "structural fallback; brittle, last resort"
@@ -247,7 +252,8 @@
       "wait_for": [],
       "outcomes": [],
       "recoveries": [],
-      "timeout_ms": 10000
+      "timeout_ms": 10000,
+      "retries": 0
     }
   ],
   "success_checkpoint": [
@@ -264,6 +270,7 @@
       "description": "label of an extracted value is on screen"
     }
   ],
+  "max_duration_ms": 120000,
   "global_outcomes": [],
   "global_recoveries": [
     {
@@ -298,10 +305,51 @@
           "wait_for": [],
           "outcomes": [],
           "recoveries": [],
-          "timeout_ms": 10000
+          "timeout_ms": 10000,
+          "retries": 0
         }
       ],
       "retry_from_step": "s04",
+      "max_attempts": 1
+    },
+    {
+      "code": "MAINTENANCE_NOTICE",
+      "when": {
+        "kind": "text_present",
+        "value": "SCHEDULED MAINTENANCE",
+        "timeout_ms": 0,
+        "description": "identified during probe 'maintenance'"
+      },
+      "actions": [
+        {
+          "step_id": "clear_maintenance_notice",
+          "action": "click",
+          "description": "clear MAINTENANCE_NOTICE: click ACKNOWLEDGE",
+          "locators": [
+            {
+              "strategy": "role",
+              "value": "button",
+              "name": "ACKNOWLEDGE",
+              "frame": "mainframe",
+              "exact": true,
+              "rationale": "accessible role+name; survives markup and styling changes"
+            },
+            {
+              "strategy": "xpath",
+              "value": "/html[1]/body[1]/div[1]/table[1]/tbody[1]/tr[3]/td[1]/input[1]",
+              "frame": "mainframe",
+              "exact": true,
+              "rationale": "structural fallback; brittle, last resort"
+            }
+          ],
+          "risk": "safe",
+          "wait_for": [],
+          "outcomes": [],
+          "recoveries": [],
+          "timeout_ms": 10000,
+          "retries": 0
+        }
+      ],
       "max_attempts": 1
     }
   ],
@@ -329,10 +377,10 @@
     ]
   },
   "meta": {
-    "created_at": "2026-09-08T21:57:40.169189Z",
+    "created_at": "2026-09-09T00:15:44.102590Z",
     "recorded_by": "discovery_agent",
     "model": "scripted",
-    "discovery_run_id": "20260908T215734_discovery_scripted",
+    "discovery_run_id": "20260909T001537_discovery_scripted",
     "source_goal": "Look up member 12345 and read their current savings balance",
     "checkpoint_fingerprints": {
       "final": "94d557812ef0c478"

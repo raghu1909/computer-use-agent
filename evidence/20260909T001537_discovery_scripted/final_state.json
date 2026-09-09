@@ -1,0 +1,73 @@
+{
+  "status": "success",
+  "steps": 7,
+  "llm_calls": 11,
+  "reason": "savings balance for the member has been read",
+  "artifact_path": "capabilities/member_savings_balance.v1.json",
+  "handoffs": [],
+  "probes": [
+    {
+      "label": "not_found",
+      "params": {
+        "member_id": "99999"
+      },
+      "entry_url": "http://localhost:5000/",
+      "first_replay": "FAILURE at s05 [checkpoint_failed] expected: after click: url_contains '/members/99999' | observed: still not met after 2 waits",
+      "evidence": "evidence/20260909T001544_probe_not_found",
+      "classification": {
+        "kind": "business_outcome",
+        "code": "MEMBER_NOT_FOUND",
+        "match_text": "NO MEMBER FOUND",
+        "message": "No member exists with that number",
+        "clear_ref": null,
+        "retry_from_step": null,
+        "reasoning": "the search page reports the number is unknown; a legitimate answer for the caller"
+      },
+      "encoded": "outcome MEMBER_NOT_FOUND on s05",
+      "verify_replay": "OUTCOME MEMBER_NOT_FOUND: No member exists with that number (at s05)",
+      "verified": true
+    },
+    {
+      "label": "session_timeout",
+      "params": {
+        "member_id": "12345"
+      },
+      "entry_url": "http://localhost:5000/?force_error=session_timeout",
+      "first_replay": "FAILURE at s05 [checkpoint_failed] expected: after click: url_contains '/members/12345' | observed: still not met after 2 waits",
+      "evidence": "evidence/20260909T001600_probe_session_timeout",
+      "classification": {
+        "kind": "recoverable",
+        "code": "SESSION_EXPIRED",
+        "match_text": "SESSION EXPIRED",
+        "message": "",
+        "clear_ref": "e1",
+        "retry_from_step": "s04",
+        "reasoning": "the host shows an idle-timeout interstitial; CONTINUE restores the session, then redo the search"
+      },
+      "encoded": "recovery SESSION_EXPIRED (global) retry_from=s04",
+      "verify_replay": "SUCCESS outputs={'savings_balance': '4812.37'}",
+      "verified": true
+    },
+    {
+      "label": "maintenance",
+      "params": {
+        "member_id": "12345"
+      },
+      "entry_url": "http://localhost:5000/?force_error=maintenance_notice",
+      "first_replay": "FAILURE at s05 [checkpoint_failed] expected: after click: text_present 'SAVINGS BALANCE' | observed: still not met after 2 waits",
+      "evidence": "evidence/20260909T001621_probe_maintenance",
+      "classification": {
+        "kind": "recoverable",
+        "code": "MAINTENANCE_NOTICE",
+        "match_text": "SCHEDULED MAINTENANCE",
+        "message": "",
+        "clear_ref": "e6",
+        "retry_from_step": null,
+        "reasoning": "informational interstitial; dismiss and continue"
+      },
+      "encoded": "recovery MAINTENANCE_NOTICE (global) retry_from=None",
+      "verify_replay": "SUCCESS outputs={'savings_balance': '4812.37'}",
+      "verified": true
+    }
+  ]
+}

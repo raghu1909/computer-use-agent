@@ -1,0 +1,88 @@
+[
+  {
+    "index": 1,
+    "timestamp": "2026-09-09T00:16:00.163+00:00",
+    "mode": "replay",
+    "step_id": "s01",
+    "action": "type",
+    "status": "ok",
+    "locator_used": "label_adjacent='USER ID'",
+    "locator_attempts": [
+      "label_adjacent='USER ID' -> OK"
+    ],
+    "value": "[REDACTED]",
+    "observed": "",
+    "duration_ms": 31,
+    "attempt": 1
+  },
+  {
+    "index": 2,
+    "timestamp": "2026-09-09T00:16:00.212+00:00",
+    "mode": "replay",
+    "step_id": "s02",
+    "action": "type",
+    "status": "ok",
+    "locator_used": "label_adjacent='PASSWORD'",
+    "locator_attempts": [
+      "label_adjacent='PASSWORD' -> OK"
+    ],
+    "value": "[REDACTED]",
+    "observed": "",
+    "duration_ms": 13,
+    "attempt": 1
+  },
+  {
+    "index": 3,
+    "timestamp": "2026-09-09T00:16:00.315+00:00",
+    "mode": "replay",
+    "step_id": "s03",
+    "action": "click",
+    "status": "ok",
+    "locator_used": "role=button name='SIGN ON'",
+    "locator_attempts": [
+      "role=button name='SIGN ON' -> OK"
+    ],
+    "value": null,
+    "observed": "",
+    "duration_ms": 72,
+    "attempt": 1
+  },
+  {
+    "index": 4,
+    "timestamp": "2026-09-09T00:16:00.364+00:00",
+    "mode": "replay",
+    "step_id": "s04",
+    "action": "type",
+    "status": "ok",
+    "locator_used": "label_adjacent='MEMBER NUMBER'",
+    "locator_attempts": [
+      "label_adjacent='MEMBER NUMBER' -> OK"
+    ],
+    "value": "12345",
+    "observed": "",
+    "duration_ms": 21,
+    "attempt": 1
+  },
+  {
+    "index": 5,
+    "timestamp": "2026-09-09T00:16:05.497+00:00",
+    "mode": "replay",
+    "step_id": "s05",
+    "action": "click",
+    "status": "retrying",
+    "locator_used": "role=button name='INQUIRE'",
+    "locator_attempts": [
+      "role=button name='INQUIRE' -> OK"
+    ],
+    "value": null,
+    "observed": "url_contains='/members/12345' not met; observed url=http://localhost:5000/members/search -> transient, retrying",
+    "duration_ms": 5102,
+    "attempt": 1
+  },
+  {
+    "kind": "retry",
+    "timestamp": "2026-09-09T00:16:05.498+00:00",
+    "step_id": "s05",
+    "attempt": 1
+  }
+]

@@ -55,8 +55,9 @@ CapabilityArtifact
   parameters: [ParamDef{name, type: string|integer|decimal|date|enum, required, pattern, choices, example, sensitive}]
   outputs:    [OutputDef{name, type, extracted_by: step_id, postprocess: strip|money|digits}]
   steps:      [StepDef{step_id, action, description, locators:[Locator], value:"{param}", output, risk,
-                       wait_for:[Condition], outcomes:[OutcomeRule], recoveries:[RecoveryRule], timeout_ms}]
+                       wait_for:[Condition], outcomes:[OutcomeRule], recoveries:[RecoveryRule], timeout_ms, retries}]
   success_checkpoint: [Condition]
+  max_duration_ms                           # wall-clock budget for one invocation
   global_outcomes / global_recoveries      # apply to every step (e.g. SESSION_EXPIRED interstitial)
   safety: SafetyPolicy                      # allowlist travels with the capability
   meta: {model, discovery_run_id, source_goal, app_family, app_version, tenant, checkpoint_fingerprints}
@@ -104,12 +105,18 @@ Runtime conditions are checked on every step *after* the action and *before* dec
 | class | detected by | replay does | result |
 |---|---|---|---|
 | business outcome | `OutcomeRule.when` (e.g. text "NO MEMBER FOUND") | stop cleanly | `status=business_outcome, outcome={code, message, at_step, observed_text}` |
-| recoverable | `RecoveryRule.when` (e.g. "SESSION EXPIRED"), or an HTTP error page when a human is available | run `actions`, jump to `retry_from_step`, bounded by `max_attempts`; `recoveries=[...]` | continues |
-| hard failure | `http_error_page` signature, locator chain exhausted, wait/checkpoint timeout, guardrail block, exception | snapshot screenshot + a11y tree + detail, stop | `status=failure, failure={step_id, kind, expected, observed, locator_attempts, evidence_dir}` |
+| recoverable | `RecoveryRule.when` (e.g. "SESSION EXPIRED", "SCHEDULED MAINTENANCE") | run `actions`; then either jump to `retry_from_step`, or — if the failed step's post-conditions now hold — just continue (a dismissed overlay must not re-click INQUIRE). Bounded by `max_attempts` per rule and `max_recoveries` per run | continues |
+| transient | a **safe** step's post-condition timed out, no error page | wait one more budget for the post-conditions (`StepDef.retries`, recorder sets 1 on safe navigating steps); locator miss → re-run the step. Risky steps are never retried: a doubled click could post twice | continues or fails |
+| unexpected dialog | Playwright `dialog` event (alert/confirm/prompt) | auto-**dismiss** (never accept — accepting a `confirm()` could commit), log `unexpected_dialog` in the step trace | continues |
+| hard failure | `http_error_page` signature, locator chain exhausted, wait/checkpoint timeout, recovery actions themselves failing (`recovery_failed`), wall-clock budget exceeded (`timeout`), unreachable entry URL, guardrail block, exception | snapshot screenshot + a11y tree + detail, stop | `status=failure, failure={step_id, kind, expected, observed, locator_attempts, evidence_dir}` |
 | aborted | operator chose abort during a handoff | stop | `status=aborted` |
 
-Evidence for each is in `evidence/`: `*_replay_not_found`, `*_replay_session_timeout`, `*_replay_app_error`
-(with `failure/`), `*_replay_bad_input`, `*_replay_handoff`. Exit codes map to the classes so a calling
+Every loop is bounded: per-rule `max_attempts`, per-run `max_recoveries` (6) and `max_handoffs` (3),
+per-step `retries`, and `max_duration_ms` (120 s) — a replay can never spin. Multi-run stability:
+`cua replay --repeat N` prints `stability: k/N` so approval can be gated on clean repeats.
+
+Evidence for each is in `evidence/`: `*_replay_not_found`, `*_replay_session_timeout`, `*_replay_maintenance`,
+`*_replay_app_error` (with `failure/`), `*_replay_bad_input`, `*_replay_handoff`. Exit codes map to the classes so a calling
 agent can branch without parsing.
 
 Drift (secondary): the locator chain degrades gracefully (semantic → attribute → structural), each fallback
@@ -184,15 +191,14 @@ default and approval gating exists. The operator console has no authentication.
 
 Cut deliberately (seam exists, documented above): desktop `Surface`; tenant overlay loader (schema fields
 present, merge not implemented); real co-browsing and console auth; artifact DB (JSON files); async/queued
-execution; multi-run stability scoring; screenshot redaction.
+execution; screenshot redaction; `permission_denied` is injectable in the mock but not exercised by the
+read-only capability (it would be a `business_outcome` on a sub-account-opening capability).
 
 Cut for time: LLM-assisted single-step recovery on replay failure (would sit exactly where the handoff is
-raised, bounded to one step, policy-checked, recorded as evidence); a `maintenance_notice` recovery rule
-(the notice doesn't block the flow in the mock, so probing found nothing to encode); page-object code
-generation from the artifact (the schema has everything needed); retry/backoff on transient network errors
-beyond `wait_for` timeouts.
+raised, bounded to one step, policy-checked, recorded as evidence); page-object code generation from the
+artifact (the schema has everything needed); network-level retry/backoff (only the UI-level `retries` exists).
 
 Next, in order: (1) tenant overlays + drift trending from the fallback/fingerprint signals — this is where
-the multi-tenant value is; (2) bounded LLM recovery as a `RecoveryRule` of kind `assisted`; (3) stability
-scoring feeding `status` transitions (draft → approved after N clean replays); (4) `DesktopSurface` on
+the multi-tenant value is; (2) bounded LLM recovery as a `RecoveryRule` of kind `assisted`; (3) `--repeat`
+stability feeding `status` transitions automatically (draft → approved after N clean replays); (4) `DesktopSurface` on
 AT-SPI/UIA to prove the seam with a second surface kind.

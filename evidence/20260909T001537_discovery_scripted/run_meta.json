@@ -1,0 +1,20 @@
+{
+  "run_id": "20260909T001537_discovery_scripted",
+  "mode": "discovery",
+  "started_at": "2026-09-09T00:15:37.979+00:00",
+  "goal": "Look up member 12345 and read their current savings balance",
+  "entry_url": "http://localhost:5000/",
+  "params": {
+    "member_id": "12345"
+  },
+  "secret_params": [
+    "[REDACTED:[REDACTED:[REDACTED:[REDACTED:[REDACTED:[REDACTED:[REDACTED:[REDACTED:operator_user]_user]_user]_user]_user]_user]_user]_user]_user",
+    "[REDACTED:[REDACTED:[REDACTED:[REDACTED:[REDACTED:[REDACTED:[REDACTED:[REDACTED:operator_user]_user]_user]_user]_user]_user]_user]_user]_password"
+  ],
+  "llm": "scripted",
+  "max_steps": 25,
+  "finished_at": "2026-09-09T00:16:53.977+00:00",
+  "duration_s": 76.0,
+  "status": "success",
+  "llm_usage": null
+}

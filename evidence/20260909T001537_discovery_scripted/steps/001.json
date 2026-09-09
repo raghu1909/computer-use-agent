@@ -1,0 +1,31 @@
+{
+  "index": 1,
+  "timestamp": "2026-09-09T00:15:38.448+00:00",
+  "mode": "discovery",
+  "url_before": "http://localhost:5000/",
+  "fingerprint_before": "51e3092e1d7615c2",
+  "decision": {
+    "action": "type",
+    "ref": "e1",
+    "value": "[REDACTED]",
+    "risk": "safe",
+    "reasoning": "sign-on form: enter the [REDACTED:[REDACTED:operator_user]_user] user id"
+  },
+  "element": {
+    "ref": "e1",
+    "role": "textbox",
+    "name": "USER ID",
+    "frame": null,
+    "candidate_locators": [
+      "label_adjacent='USER ID'",
+      "css='input[name=\"userid\"]'",
+      "xpath='/html[1]/body[1]/center[1]/form[1]/table[1]/tbody[1]/tr[2]/td[2]/input[1]'"
+    ]
+  },
+  "url_after": "http://localhost:5000/",
+  "expect_seen": null,
+  "extracted": null,
+  "error": null,
+  "duration_ms": 95,
+  "human_intervention": null
+}

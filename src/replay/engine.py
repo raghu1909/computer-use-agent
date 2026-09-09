@@ -4,8 +4,10 @@ Per step: guardrail check -> resolve locator chain -> act -> wait for declared
 post-conditions. Any deviation is classified in this order:
   1. declared business outcome  -> terminal, reported as such (not a failure)
   2. declared recoverable       -> run its clearing actions, resume from the declared step
-  3. HTTP error page            -> hard failure
-  4. otherwise                  -> handoff to a human if available, else hard failure
+  3. transient (step.retries)   -> re-run the same step once more, only for safe steps
+  4. HTTP error page            -> hard failure
+  5. otherwise                  -> handoff to a human if available, else hard failure
+Bounded everywhere: per-rule max_attempts, max handoffs, total recoveries, wall-clock deadline.
 """
 
 from __future__ import annotations
@@ -23,6 +25,7 @@ from artifact.schema import (
     OutcomeRule,
     ParamType,
     RecoveryRule,
+    RiskLevel,
     SafetyPolicy,
     StepDef,
 )
@@ -114,6 +117,9 @@ class ReplayEngine:
         confirm_risky: bool = False,
         policy_override: SafetyPolicy | None = None,
         require_approved: bool = False,
+        max_handoffs: int = 3,
+        max_recoveries: int = 6,
+        deadline_ms: int | None = None,
     ):
         self.surface = surface
         self.log = runlog
@@ -121,6 +127,9 @@ class ReplayEngine:
         self.confirm_risky = confirm_risky
         self.policy_override = policy_override
         self.require_approved = require_approved
+        self.max_handoffs = max_handoffs
+        self.max_recoveries = max_recoveries
+        self.deadline_ms = deadline_ms
 
     # ------------------------------------------------------------------------
     def replay(
@@ -168,16 +177,31 @@ class ReplayEngine:
         chk = guard.check(ActionType.NAVIGATE, url=artifact.entry_url, target_url=artifact.entry_url)
         if not chk.allowed:
             return self._fail(res, None, "guardrail_blocked", "entry url inside allowlist", chk.reason, t0)
-        self.surface.navigate(artifact.entry_url, 15000)
+        try:
+            self.surface.navigate(artifact.entry_url, 15000)
+        except Exception as e:  # noqa: BLE001
+            return self._fail(res, None, "unexpected_state", "entry url reachable", f"{e.__class__.__name__}: {e}", t0)
 
         steps = artifact.steps
         index = {s.step_id: n for n, s in enumerate(steps)}
         recovery_attempts: dict[str, int] = {}
+        step_attempts: dict[str, int] = {}
+        deadline = self.deadline_ms or artifact.max_duration_ms
         i = 0
         while i < len(steps):
             step = steps[i]
             st0 = time.time()
-            trace = StepTrace(step_id=step.step_id, action=step.action.value)
+            if deadline and (st0 - t0) * 1000 > deadline:
+                return self._fail(
+                    res,
+                    step.step_id,
+                    "timeout",
+                    f"replay within {deadline} ms",
+                    f"elapsed {int((st0 - t0) * 1000)} ms",
+                    t0,
+                )
+            step_attempts[step.step_id] = step_attempts.get(step.step_id, 0) + 1
+            trace = StepTrace(step_id=step.step_id, action=step.action.value, attempt=step_attempts[step.step_id])
             try:
                 value = render(step.value, values)
                 trace.value = "[REDACTED]" if self._is_secret(step.value, artifact) else value
@@ -215,6 +239,10 @@ class ReplayEngine:
                     self._record(trace, st0)
                     res.trace.append(trace)
                     return self._outcome(res, step, hit, t0)
+                dialogs = self.surface.drain_dialogs()
+                if dialogs:
+                    trace.observed = (trace.observed + " " if trace.observed else "") + f"dismissed dialogs: {dialogs}"
+                    self.log.event("unexpected_dialog", step_id=step.step_id, dialogs=dialogs)
                 trace.status = "ok"
                 self._record(trace, st0)
                 res.trace.append(trace)
@@ -233,7 +261,11 @@ class ReplayEngine:
                     return self._outcome(res, step, hit, t0)
                 # 2. recoverable?
                 rec = self._match_recovery(step.recoveries + artifact.global_recoveries, values)
-                if rec and recovery_attempts.get(rec.code, 0) < rec.max_attempts:
+                if (
+                    rec
+                    and recovery_attempts.get(rec.code, 0) < rec.max_attempts
+                    and len(res.recoveries) < self.max_recoveries
+                ):
                     recovery_attempts[rec.code] = recovery_attempts.get(rec.code, 0) + 1
                     trace.status = "recovered"
                     trace.observed += f" -> recovery {rec.code}"
@@ -241,12 +273,26 @@ class ReplayEngine:
                     res.trace.append(trace)
                     res.recoveries.append(rec.code)
                     self.log.event("recovery", code=rec.code, step_id=step.step_id)
-                    for a in rec.actions:
-                        atrace = StepTrace(step_id=f"{step.step_id}/recover:{a.step_id}", action=a.action.value)
-                        self._execute(a, render(a.value, values), values, atrace)
-                        atrace.status = "ok"
-                        res.trace.append(atrace)
-                    i = index[rec.retry_from_step] if rec.retry_from_step else i
+                    try:
+                        for a in rec.actions:
+                            atrace = StepTrace(step_id=f"{step.step_id}/recover:{a.step_id}", action=a.action.value)
+                            self._execute(a, render(a.value, values), values, atrace)
+                            atrace.status = "ok"
+                            res.trace.append(atrace)
+                    except (ResolveError, ConditionFailed) as re_:
+                        return self._fail(
+                            res,
+                            step.step_id,
+                            "recovery_failed",
+                            f"recovery {rec.code} actions to clear the condition",
+                            str(re_),
+                            t0,
+                        )
+                    if rec.retry_from_step:
+                        i = index[rec.retry_from_step]
+                    elif isinstance(e, ConditionFailed) and self._postconditions_hold(step, values):
+                        # the action had landed; the interstitial only hid the result. Clearing it is enough.
+                        i += 1
                     continue
                 # 3. classify the hard failure
                 is_err, obs = self.surface.check(Condition(kind=ConditionKind.HTTP_ERROR_PAGE))
@@ -257,8 +303,41 @@ class ReplayEngine:
                     kind, observed = "locator_unresolved", "no locator matched"
                 else:
                     kind, observed = "checkpoint_failed", e.observed
-                # 4. hand off (human fixes the live session, tells us where to resume), or fail
-                if self.handoff:
+                # 4. transient? (safe steps only: a risky click must never be doubled)
+                #    locator miss  -> re-run the whole step
+                #    slow landing  -> the action fired; wait another budget for its post-conditions
+                if not is_err and step.risk == RiskLevel.SAFE and step_attempts[step.step_id] <= step.retries:
+                    trace.status = "retrying"
+                    trace.observed += " -> transient, retrying"
+                    self._record(trace, st0)
+                    res.trace.append(trace)
+                    self.log.event("retry", step_id=step.step_id, attempt=step_attempts[step.step_id])
+                    if isinstance(e, ResolveError):
+                        continue
+                    landed = False
+                    while step_attempts[step.step_id] <= step.retries:
+                        step_attempts[step.step_id] += 1
+                        landed = self._postconditions_hold(step, values)
+                        res.trace.append(
+                            StepTrace(
+                                step_id=step.step_id,
+                                action=step.action.value,
+                                status="ok" if landed else "retrying",
+                                observed="post-conditions met on extended wait" if landed else "still waiting",
+                                attempt=step_attempts[step.step_id],
+                            )
+                        )
+                        if landed:
+                            break
+                    if landed:
+                        i += 1
+                        continue
+                    kind, observed = "checkpoint_failed", f"still not met after {step.retries + 1} waits"
+                    trace = StepTrace(
+                        step_id=step.step_id, action=step.action.value, attempt=step_attempts[step.step_id]
+                    )
+                # 5. hand off (human fixes the live session, tells us where to resume), or fail
+                if self.handoff and len(res.handoffs) < self.max_handoffs:
                     trace.status = "handoff"
                     self._record(trace, st0)
                     res.trace.append(trace)
@@ -326,6 +405,14 @@ class ReplayEngine:
             if not ok:
                 raise ConditionFailed(c, obs)
         return extracted
+
+    def _postconditions_hold(self, step: StepDef, values: dict[str, str]) -> bool:
+        for cond in step.wait_for:
+            c = cond.model_copy(update={"value": render(cond.value, values) or ""})
+            ok, _ = self.surface.wait_for(c)
+            if not ok:
+                return False
+        return True
 
     def _match_outcomes(self, rules: list[OutcomeRule], values: dict[str, str]) -> tuple[OutcomeRule, str] | None:
         for r in rules:

@@ -1,0 +1,30 @@
+{
+  "index": 3,
+  "timestamp": "2026-09-09T00:15:38.680+00:00",
+  "mode": "discovery",
+  "url_before": "http://localhost:5000/",
+  "fingerprint_before": "c0448fbba42ea7d8",
+  "decision": {
+    "action": "click",
+    "ref": "e3",
+    "risk": "safe",
+    "reasoning": "submit the sign-on form",
+    "expect": "MEMBER INQUIRY"
+  },
+  "element": {
+    "ref": "e3",
+    "role": "button",
+    "name": "SIGN ON",
+    "frame": null,
+    "candidate_locators": [
+      "role=button name='SIGN ON'",
+      "xpath='/html[1]/body[1]/center[1]/form[1]/table[1]/tbody[1]/tr[4]/td[1]/input[1]'"
+    ]
+  },
+  "url_after": "http://localhost:5000/members",
+  "expect_seen": true,
+  "extracted": null,
+  "error": null,
+  "duration_ms": 106,
+  "human_intervention": null
+}

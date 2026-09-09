@@ -1,0 +1,133 @@
+[
+  {
+    "index": 1,
+    "timestamp": "2026-09-09T00:18:22.245+00:00",
+    "mode": "replay",
+    "step_id": "s01",
+    "action": "type",
+    "status": "ok",
+    "locator_used": "label_adjacent='USER ID'",
+    "locator_attempts": [
+      "label_adjacent='USER ID' -> OK"
+    ],
+    "value": "[REDACTED]",
+    "observed": "",
+    "duration_ms": 43,
+    "attempt": 1
+  },
+  {
+    "index": 2,
+    "timestamp": "2026-09-09T00:18:22.290+00:00",
+    "mode": "replay",
+    "step_id": "s02",
+    "action": "type",
+    "status": "ok",
+    "locator_used": "label_adjacent='PASSWORD'",
+    "locator_attempts": [
+      "label_adjacent='PASSWORD' -> OK"
+    ],
+    "value": "[REDACTED]",
+    "observed": "",
+    "duration_ms": 13,
+    "attempt": 1
+  },
+  {
+    "index": 3,
+    "timestamp": "2026-09-09T00:18:22.407+00:00",
+    "mode": "replay",
+    "step_id": "s03",
+    "action": "click",
+    "status": "ok",
+    "locator_used": "role=button name='SIGN ON'",
+    "locator_attempts": [
+      "role=button name='SIGN ON' -> OK"
+    ],
+    "value": null,
+    "observed": "",
+    "duration_ms": 76,
+    "attempt": 1
+  },
+  {
+    "index": 4,
+    "timestamp": "2026-09-09T00:18:22.461+00:00",
+    "mode": "replay",
+    "step_id": "s04",
+    "action": "type",
+    "status": "ok",
+    "locator_used": "label_adjacent='MEMBER NUMBER'",
+    "locator_attempts": [
+      "label_adjacent='MEMBER NUMBER' -> OK"
+    ],
+    "value": "12345",
+    "observed": "",
+    "duration_ms": 20,
+    "attempt": 1
+  },
+  {
+    "index": 5,
+    "timestamp": "2026-09-09T00:18:32.441+00:00",
+    "mode": "replay",
+    "step_id": "s05",
+    "action": "click",
+    "status": "handoff",
+    "locator_used": "role=button name='INQUIRE'",
+    "locator_attempts": [
+      "role=button name='INQUIRE' -> OK"
+    ],
+    "value": null,
+    "observed": "text_present='SAVINGS BALANCE' not met; observed text not found: 'SAVINGS BALANCE'",
+    "duration_ms": 9955,
+    "attempt": 1
+  },
+  {
+    "kind": "handoff_requested",
+    "timestamp": "2026-09-09T00:18:34.498+00:00",
+    "intervention_id": "e9017cea",
+    "reason": "automation stuck (http_error_page)",
+    "step_id": "s05",
+    "url": "http://localhost:5000/members/12345"
+  },
+  {
+    "kind": "human_action",
+    "timestamp": "2026-09-09T00:18:35.261+00:00",
+    "intervention_id": "e9017cea",
+    "at": "2026-09-09T00:18:35.261+00:00",
+    "action": "click",
+    "ref": "e1",
+    "target": "role=link name='MEMBER DETAIL' in frame 'navframe'",
+    "value": null,
+    "result": "ok",
+    "url_after": "http://localhost:5000/members/12345"
+  },
+  {
+    "kind": "handoff_resolved",
+    "timestamp": "2026-09-09T00:18:39.417+00:00",
+    "intervention_id": "e9017cea",
+    "human_actions": 1,
+    "notes": "reloaded detail frame after transient 500",
+    "resume_from_step": "s06"
+  },
+  {
+    "index": 6,
+    "timestamp": "2026-09-09T00:18:39.459+00:00",
+    "mode": "replay",
+    "step_id": "s06",
+    "action": "extract",
+    "status": "ok",
+    "locator_used": "label_adjacent='SAVINGS BALANCE' in frame 'mainframe'",
+    "locator_attempts": [
+      "label_adjacent='SAVINGS BALANCE' in frame 'mainframe' -> OK"
+    ],
+    "value": null,
+    "observed": "savings_balance='4812.37'",
+    "duration_ms": 18,
+    "attempt": 1
+  },
+  {
+    "kind": "drift_check",
+    "timestamp": "2026-09-09T00:18:42.477+00:00",
+    "recorded": "94d557812ef0c478",
+    "current": "94d557812ef0c478",
+    "drift": false
+  }
+]

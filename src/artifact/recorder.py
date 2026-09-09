@@ -183,6 +183,8 @@ class Recorder:
                     output=out_name,
                     risk=risk,
                     wait_for=wait_for,
+                    # a safe read/navigation step that waits on the server may be slow once; retry it once
+                    retries=1 if (wait_for and risk == RiskLevel.SAFE and action != ActionType.TYPE) else 0,
                 )
             )
 

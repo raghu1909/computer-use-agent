@@ -13,7 +13,7 @@ import hashlib
 import re
 import time
 
-from playwright.sync_api import Browser, BrowserContext, Frame, Page, Playwright, sync_playwright
+from playwright.sync_api import Browser, BrowserContext, Dialog, Frame, Page, Playwright, sync_playwright
 from playwright.sync_api import Locator as PWLocator
 from playwright.sync_api import TimeoutError as PWTimeout
 
@@ -123,7 +123,19 @@ class BrowserSurface:
         self.page.set_default_timeout(5000)
         self.cdp_port = cdp_port
         self._console_errors: list[str] = []
+        self._dialogs: list[str] = []
         self.page.on("pageerror", lambda e: self._console_errors.append(str(e)))
+        # Unexpected JS dialogs would otherwise block every later action. Policy: never accept
+        # (accepting a confirm() could commit something); dismiss, and report so the replay can log it.
+        self.page.on("dialog", self._on_dialog)
+
+    def _on_dialog(self, dialog: Dialog) -> None:
+        self._dialogs.append(f"{dialog.type}: {dialog.message[:200]}")
+        dialog.dismiss()
+
+    def drain_dialogs(self) -> list[str]:
+        out, self._dialogs = self._dialogs, []
+        return out
 
     # -- perception ----------------------------------------------------------
     def _frame_key(self, f: Frame) -> str | None:

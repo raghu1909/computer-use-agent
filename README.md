@@ -76,6 +76,7 @@ cua discover \
   --llm anthropic \
   --probe 'not_found={"params":{"member_id":"99999"}}' \
   --probe 'session_timeout={"entry_url":"http://localhost:5000/?force_error=session_timeout"}' \
+  --probe 'maintenance={"entry_url":"http://localhost:5000/?force_error=maintenance_notice"}' \
   --approve --label anthropic
 ```
 
@@ -91,6 +92,10 @@ cua replay --artifact capabilities/member_savings_balance.v1.json --params '{"me
 #   OUTCOME MEMBER_NOT_FOUND: No member exists with that number (at s05)          exit 0
 cua replay --artifact ... --params '{"member_id":"12345"}' --entry 'http://localhost:5000/?force_error=session_timeout'
 #   SUCCESS (recoveries=['SESSION_EXPIRED'])
+cua replay --artifact ... --params '{"member_id":"12345"}' --entry 'http://localhost:5000/?force_error=maintenance_notice'
+#   SUCCESS (recoveries=['MAINTENANCE_NOTICE'])   overlay dismissed, step not re-clicked
+cua replay --artifact ... --params '{"member_id":"23456"}' --repeat 5
+#   stability: 5/5 runs terminal-ok (100%)
 cua replay --artifact ... --params '{"member_id":"12345"}' --entry 'http://localhost:5000/?force_error=app_error' --no-handoff
 #   FAILURE at s05 [http_error_page] expected: text_present 'SAVINGS BALANCE' | observed: 'HTTP 500'   exit 2
 #   evidence/<run>/failure/{screenshot.png,a11y_snapshot.txt,detail.json}
